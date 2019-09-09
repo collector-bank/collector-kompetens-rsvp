@@ -1,0 +1,66 @@
+<div class="modal fade" id="editEventModal<%= event._id %>" tabindex="-1" role="dialog" aria-labelledby="editEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editEventModalLabel">Edit event</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/api/events/<%= event._id %>/_update" method="POST">
+          <div class="form-group">
+            <label for="title" class="col-form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="<%= event.title %>">
+          </div>
+          <div class="form-group">
+            <label for="description" class="col-form-label">Description</label>
+            <textarea class="form-control" id="description" name="description"><%= event.description %></textarea>
+          </div>
+          <div class="form-group">
+            <label for="tag" class="col-form-label">Tag</label>
+            <input type="text" class="form-control" id="tag" name="tag" value="<%= event.tag %>">
+          </div>          
+          <div class="form-group">
+           <label for="date" class="col-form-label">Date</label>
+           <input type="date" class="form-control" id="date" min="1000-01-01" max="3000-12-31" name="date" value="<%= event.date ? new Date(event.date).toISOString().substring(0, 10) : "" %>">
+          </div>          
+          <div class="form-group">
+            <label for="contact" class="col-form-label">Contact</label>
+            <input type="text" class="form-control" id="contact" name="contact" value="<%= event.contact %>">
+          </div>                  
+          <div class="form-group">
+            <label for="maxParticipants" class="col-form-label">Max Participants</label>
+            <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"  value="<%= event.maxParticipants %>" >
+          </div>                  
+          <div class="form-group">
+            <label for="link" class="col-form-label">Link (title, url)</label>
+            <input type="text" class="form-control" id="link" name="link"  value="<%= event.link ? (event.link.title + "," + event.link.href) : null %>">
+          </div>                  
+          <div class="form-group">
+            <label for="inputState">State</label>
+            <select id="inputState" class="form-control" name="state">
+              <option <%= event.state == "open" ? "selected" : "" %>>open</option>
+              <option <%= event.state == "closed" ? "selected" : "" %>>closed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputState">Event Type</label>
+            <select id="inputState" class="form-control" name="eventType">
+              <option <%= event.eventType == "Lunch" ? "selected" : "" %>>Lunch</option>
+              <option <%= event.eventType == "Workshop" ? "selected" : "" %>>Workshop</option>
+              <option <%= event.eventType == "Other" ? "selected" : "" %>>Other</option>
+            </select>
+          </div>          
+          <div class="modal-footer">
+            <div class="form-group">        
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-collector-purple" >Update</button>
+            </div>
+          </div>  
+        </form>
+                              
+      </div>
+    </div>
+  </div>
+</div>
