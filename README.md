@@ -7,6 +7,7 @@ Configuration
 ---------------
 Expected environment variables are:
 
+```
 TENANT_ID=<azuread tenant id>
 CLIENT_ID=<azuread app id>
 CLIENT_SECRET=<azuread app secret>
@@ -15,3 +16,4 @@ DBUSERNAME=<user to cosmosdb/mongodb backend database>
 DBPASSWORD=<password to cosmosdb/mongodb backend database>
 HOST=<name of host such as collector-kompetenslunch-rsvp.glitch.me>
 
+```
