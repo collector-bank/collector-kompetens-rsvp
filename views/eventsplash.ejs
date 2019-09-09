@@ -1,0 +1,55 @@
+    <div class="col">
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
+          <h3 class="mb-0"><%= event.title %></h3>
+          <div class="mb-1 text-muted"><%= moment(event.date).fromNow() %></div>
+          <p class="card-text mb-auto"><%= event.description %></p>
+          
+          <span class="mt-2">
+            <span><%= event.contact %></span>
+            <span><%= (event.contact && event.link) ? "|" : "" %></span>
+            <% if (event.link)  { %>
+              <a href="<%= event.link.href %>" class="text-collector-pink"><%=event.link.title %></a>
+            <% } %>                          
+          </span>
+          
+          <% if (user) { %>
+            <div class="mt-2">
+              <span>
+                <%
+                  const signedUp = event.participants.find(x => x.email == user.email);
+                %>
+                <% if (event.state == "open") { %>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal<%=event._id%>">Signup <%= signedUp ? "(already signedup)" : "" %> | <%= event.maxParticipants - event.participants.length %> seats left</button>
+                  <% if (signedUp) { %>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave">Leave</a>                  
+                  <% } %>
+                <% } %>
+                <% if (settings.adminView) { %>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>                
+                  <a class="btn btn-sm btn-outline-secondary"href="/api/events/<%=event._id%>/_delete">Delete</a>                
+                  <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
+                <% } %>
+              </span>
+            </div>
+          <% } %>
+          
+          
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+            <title>Placeholder</title>
+            <rect width="100%" height="100%" fill="#55595c"/>
+            <% if (event.eventType === "Lunch") { %>
+              <text x="50%" y="50%" fill="#eceeef" dy=".4em" style="font-size:100px">&#127860;</text>
+            <% } else {%>
+              <text x="50%" y="50%" fill="#eceeef" dy=".4em" style="font-size:20px"><%= event.eventType %> </text>
+            <% }%>            
+          </svg>
+        </div>
+      </div>
+    </div>    
+
+<%- include('signup-popup', { event, user }); %>
+<%- include('editeventmodal', { event, user }); %>
