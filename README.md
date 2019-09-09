@@ -24,7 +24,7 @@ Preconditions:
   * Web app created
   * Backend database created and configured with username and password
   * Client app registered in azure ad
-  * Client redirect-uri set to https://<host name>/auth/openid/return
+  * Client redirect-uri set to `https://<host name>/auth/openid/return`
 
 Steps:
   1. git clone https://github.com/collector-bank/collector-kompetens-rsvp.git
