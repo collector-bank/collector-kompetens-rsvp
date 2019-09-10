@@ -1,27 +1,32 @@
-Welcome to Glitch
-=================
+RSVP for Collector Kompetens Events
+===================================
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+A simple web app for RSVP
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+Configuration
+---------------
+Expected environment variables are:
 
-Find out more [about Glitch](https://glitch.com/about).
+```
+TENANT_ID=<azuread tenant id>
+CLIENT_ID=<azuread app id>
+CLIENT_SECRET=<azuread app secret>
+SESSION_SECRET=<random string for session encryption>
+DBUSERNAME=<user to cosmosdb/mongodb backend database>
+DBPASSWORD=<password to cosmosdb/mongodb backend database>
+HOST=<name of host such as collector-kompetenslunch-rsvp.glitch.me>
+```
 
+Azure Web App deploy
+---------------------
 
-Your Project
-------------
+Preconditions: 
+  * Web app created
+  * Backend database created and configured with username and password
+  * Client app registered in azure ad
+  * Client redirect-uri set to `https://<host name>/auth/openid/return`
 
-On the front-end,
-- edit `public/client.js`, `public/style.css` and `views/index.html`
-- drag in `assets`, like images or music, to add them to your project
-
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
-
-
-Made by [Glitch](https://glitch.com/)
--------------------
-
-\ ゜o゜)ノ
+Steps:
+  1. git clone https://github.com/collector-bank/collector-kompetens-rsvp.git
+  2. git remove add azure `https://<webapp-name>.scm.azurewebsites.net:443/<webapp-name>.git`
+  3. git push azure

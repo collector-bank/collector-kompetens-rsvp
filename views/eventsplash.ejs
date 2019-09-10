@@ -20,7 +20,7 @@
                 <%
                   const signedUp = event.participants.find(x => x.email == user.email);
                 %>
-                <% if (event.state == "open") { %>
+                <% if (event.state == "Open") { %>
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal<%=event._id%>">Signup <%= signedUp ? "(already signedup)" : "" %> | <%= event.maxParticipants - event.participants.length %> seats left</button>
                   <% if (signedUp) { %>
                     <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave">Leave</a>                  
