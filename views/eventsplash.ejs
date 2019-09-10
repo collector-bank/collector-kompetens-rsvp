@@ -1,9 +1,13 @@
     <div class="col">
-      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-450 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
           <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
           <h3 class="mb-0"><%= event.title %></h3>
-          <div class="mb-1 text-muted"><%= moment(event.date).fromNow() %></div>
+          <div class="mb-1 text-muted">
+            <%=
+              [event.date ? `${moment(event.date).format('YYYY-MM-DD')} (${moment(event.date).fromNow()})` : "",  [ event.startTime, event.endTime ].filter(x => x).join(" - ") ].filter(x => x).join(" | ")
+            %> 
+          </div>
           <p class="card-text mb-auto"><%= event.description %></p>
           
           <span class="mt-2">
