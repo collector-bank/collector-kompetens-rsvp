@@ -52,7 +52,6 @@ module.exports = {
     let client = await getDbClient();  
 
     let event = await client.db(dbName).collection("events").findOne({ _id: ObjectID(eventId)});
-    console.log("event="+JSON.stringify(event));
 
     if (event.participants.length < event.maxParticipants)  
     {
