@@ -50,7 +50,21 @@ module.exports = {
   
   addParticipantToEvent: async function(eventId, participant) {
     let client = await getDbClient();  
-    await client.db(dbName).collection("events").updateOne({ _id: ObjectID(eventId), 'participants.email': {$ne: participant.email} }, { $push: { participants: participant } } );
+
+    let event = await client.db(dbName).collection("events").findOne({ _id: ObjectID(eventId)});
+    console.log("event="+JSON.stringify(event));
+
+    if (event.participants.length < event.maxParticipants)  
+    {
+      await client.db(dbName).collection("events")
+        .updateOne(
+          { _id: ObjectID(eventId)
+          , 'participants.email': {$ne: participant.email}
+//          , 'participants': {$size: {$lt: "$maxParticipants"}}  // cosmosdb mongodb interface does not support $size: { $lt: ... } so we have to write this unsafe code
+          }, 
+          { $push: { participants: participant } } );      
+    }
+    
     client.close();
   },
   
