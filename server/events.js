@@ -3,7 +3,9 @@ module.exports = function(app) {
   const db = require('./db');
   const {ensureAuthenticated} = require('../utils/checkauth.js');
   const asyncHandler = require('express-async-handler');
-
+  const { makeStdViewParams } = require('../utils/viewhelpers');
+  const stringify = require('csv-stringify');
+  
   let mkLink = (link) => {
     if (link) {
       let [p1,p2] = link.split(',').map(x => x.trim())
@@ -47,9 +49,18 @@ module.exports = function(app) {
   app.get('/api/events/:eventId/_leave', ensureAuthenticated, asyncHandler(async function (request, response) {
     console.log("leave event " + request.params.eventId);
     console.log(request.user);
-
+    console.log(request.query);
+    
     await db.leaveEvent(request.params.eventId, request.user);
-    response.redirect('/');
+    response.redirect(request.query.route ? request.query.route : '/');
+  }));
+
+ app.get('/api/events/:eventId/_leaveguest/:guest', ensureAuthenticated, asyncHandler(async function (request, response) {
+    console.log("leave event guest " + request.params.eventId + " " + request.params.guest);
+    console.log(request.user);
+
+    await db.leaveEventGuest(request.params.eventId, request.user, request.params.guest);
+    response.redirect(request.query.route ? request.query.route : '/');
   }));
   
   app.post('/api/events/:eventId/_update', ensureAuthenticated, asyncHandler(async function(request, response) {
@@ -73,6 +84,15 @@ module.exports = function(app) {
     console.log("event details " + request.params.eventId);
     const event = await db.getEvent(request.params.eventId);
     console.log(event);
-    response.render('eventdetails.ejs', { event });
+    response.render('eventdetails.ejs', { ...makeStdViewParams(request), event });
   }));
+  
+ app.get('/api/events/:eventId/_downloadparticipantscsv', ensureAuthenticated, asyncHandler(async function (request, response) {
+    const event = await db.getEvent(request.params.eventId);
+    response.setHeader('Content-Type', 'text/csv;charset=utf-8');
+    response.setHeader('Content-Disposition', 'attachment; filename=\"' + 'participants-in-' + event.title.toLowerCase().replace(/\s/g,'-') + '.csv\"');
+    response.write("\uFEFF");  // send BOM to make Excel happy
+    stringify(event.participants.map((x) => { return { name:x.name, email:x.email, foodPreference:x.foodPreference } }), { header: true, delimiter:'\t' })
+      .pipe(response);   
+ }));  
 }

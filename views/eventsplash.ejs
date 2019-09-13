@@ -25,15 +25,21 @@
                   const signedUp = event.participants.find(x => x.email == user.email);
                 %>
                 <% if (event.state == "Open") { %>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>Signup <%= signedUp ? "(already signedup)" : "" %> | <%= event.maxParticipants - event.participants.length %> seats left</button>
                   <% if (signedUp) { %>
                     <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave">Leave</a>                  
+                  <% } else { %>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalUser<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
+                      Signup | <%= event.maxParticipants - event.participants.length %> seats left
+                    </button>                
                   <% } %>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalGuest<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
+                    Add Guest
+                  </button>              
+                  <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
                 <% } %>
                 <% if (settings.adminView) { %>
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>                
                   <a class="btn btn-sm btn-outline-secondary"href="/api/events/<%=event._id%>/_delete">Delete</a>                
-                  <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
                 <% } %>
               </span>
             </div>
@@ -55,5 +61,8 @@
       </div>
     </div>    
 
-<%- include('signup-popup', { event, user }); %>
-<%- include('editeventmodal', { event, user }); %>
+<% if (user) { %>
+  <%- include('signup-popup', { event, user, guestSignup:false }); %>
+  <%- include('signup-popup', { event, user, guestSignup:true }); %>
+  <%- include('editeventmodal', { event, user }); %>
+<% } %>

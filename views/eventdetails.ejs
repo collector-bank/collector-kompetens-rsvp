@@ -1,22 +1,59 @@
-<html>
-  <body>    
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Food Preference</th>
-        </tr>
-      </thead>
-      <tbody>
-      <% for(let participant of event.participants) { %>
-        <tr>
-          <td><%= participant.name %></td>
-          <td><%= participant.email %></td>
-          <td><%= participant.foodPreference %></td>          
-        </tr>
-      <% } %>
-        </tbody>
-    </table>
-  </body>
-</html>
+<%- include('pageheader'); %>
+
+<h2>
+  <%= event.title %>
+</h2>
+
+<p>
+  <%= event.description %>  
+</p>
+
+<h4>
+  Participants
+</h4>
+
+<p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Food Preference</th>
+        <th scope="col">Guest to</th>
+        <th scope="col"></th>      
+      </tr>
+    </thead>
+    <tbody>
+        <% for(let participant of event.participants) { %>
+          <tr>
+            <td><%= participant.name %></td>
+            <td><%= participant.email %></td>
+            <td><%= participant.foodPreference %></td>          
+            <td><%= participant.guestTo %></td>
+            <td>
+              <% if (settings.adminView) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove</a>            
+              <% } else { %>            
+                <% if (participant.email == user.email) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=/eventdetails/<%=event._id%>">Remove</a>            
+                <% } %>
+                <% if (participant.guestTo == user.email) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove Guest</a>
+                <% } %>
+              <% } %>
+            </td>
+          </tr>
+        <% } %>
+    </tbody>
+  </table>
+</p>
+
+<p>
+  <% if (settings.adminView) { %>
+      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export</a>            
+  <% } %>  
+  <a class="btn btn-sm btn-outline-secondary" href="/">Back to events</a>            
+</p>
+
+
+<%- include('pagefooter'); %>

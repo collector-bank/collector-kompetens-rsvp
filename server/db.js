@@ -56,5 +56,9 @@ module.exports = {
   
   leaveEvent(eventId, user) {      
     dbdriver.leaveEvent(eventId, user);      
-  }  
+  },
+  
+  leaveEventGuest(eventId, user, guestEmail) {
+    dbdriver.leaveEventGuest(eventId, user, guestEmail);          
+  }
 }
