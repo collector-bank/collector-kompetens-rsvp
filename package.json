@@ -1,10 +1,7 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-express",
-  "version": "0.0.1",
-  "description": "A simple Node app built on Express, instantly up and running.",
+  "name": "collector-kompetens-rsvp",
+  "version": "0.1.0",
+  "description": "Collector Bank kompetens RSVP application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -22,13 +19,14 @@
     "method-override": "3.0.0",
     "mongodb": "^3.3.2",
     "mongodb-core": "^3.2.6",
-    "express-async-handler": "^1.1.4"
+    "express-async-handler": "^1.1.4",
+    "csv-stringify": "^5.3.3"
   },
   "engines": {
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
+    "url": "https://github.com/collector-bank/collector-kompetens-rsvp"
   },
   "license": "MIT",
   "keywords": [

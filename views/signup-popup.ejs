@@ -1,4 +1,4 @@
-<div class="modal fade" id="signupModal<%=event._id%>" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+<div class="modal fade" id="signupModal<%= guestSignup ? "Guest" : "User" %><%=event._id%>" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -11,16 +11,17 @@
         <form action="/api/events/<%=event._id%>/_signup" method="POST">
           <div class="form-group">
             <label for="name" class="col-form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="<%= user ? user.displayName  : "" %>">
+            <input type="text" class="form-control" id="name" name="name" value="<%= guestSignup ? "" : user.displayName  %>" <%= guestSignup ? "" : "readonly" %>>
           </div>
           <div class="form-group">
             <label for="email" class="col-form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="<%= user ? user.email  : "" %>">
+            <input type="email" class="form-control" id="email" name="email" value="<%= guestSignup ? "" : user.email %>" <%= guestSignup ? "" : "readonly" %>>
           </div>          
           <div class="form-group">
             <label for="foodPreference" class="col-form-label">Food Preference</label>
             <input type="text" class="form-control" id="foodPreference" name="foodPreference">
           </div>
+          <input type="hidden" id="guestTo" name="guestTo" value="<%= guestSignup ? user.email : "" %>">
           <div class="modal-footer">
             <div class="form-group">        
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

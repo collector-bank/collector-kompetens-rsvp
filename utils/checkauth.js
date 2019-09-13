@@ -1,14 +1,20 @@
-module.exports = {
+let admins = process.env.ADMIN_USERS != null ? process.env.ADMIN_USERS.split(',') : [];
 
-    // app.get('/examplerout', ensureAuthenticated, function(req, res) {
-    // ...
-    // });
+console.log("Admin users are " + admins)
+
+module.exports = {
     ensureAuthenticated: function (req, res, next) {
       if (req.isAuthenticated()) { return next(); }
       res.send(401);
     },
   
     isAdmin: function(oid) {
-      return true; //oid == '26a373b0-4945-4c83-81fb-8e50548a9d37'
-    }  
+      return admins.length == 0 ? true : admins.includes(oid);
+    },
+
+  /*
+    ensureAuthenticatedAndAdmin: function (req, res, next) {
+      if (req.isAuthenticated() && this.isAdmin(req.user.oid)) { return next(); }
+      res.send(401);
+    }*/
 }

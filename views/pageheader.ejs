@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    
+    <link rel="icon" href="https://www.collector.se/favicon.ico?v=pgeozjw6dw" type="image/vnd.microsoft.icon" />
+    
+    <title>Kompetenslunch - RSVP</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/style.css" rel="stylesheet" type="text/css">    
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <!-- <script src="https://kit.fontawesome.com/186413603e.js"></script>-->
+  </head>
+  <body>
+    <div class="container">
+  <header class="blog-header py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 pt-1">
+        <% if (!user) { %>
+          <a class="p-2 text-muted" href="/login">Log In</a>
+        <% } else { %>
+          <span class="text-muted only-large-screens">Logged in as: <%= user.displayName %> </span>
+
+        <% } %>          
+      </div>
+      <div class="col-4 text-center">
+        <!--<a class="blog-header-logo text-dark" href="#">Large</a>-->
+        <a href="/">
+          <img src="https://cdn.glitch.com/aa68b6be-86f9-4320-89b3-f40c09d7f78e%2Fcollector-bank.svg?v=1567538674687" />
+        </a>
+      </div>
+      <div class="col-4 d-flex justify-content-end align-items-center">
+        <!--<a class="btn btn-sm btn-outline-secondary" href="#">Add Event</a>-->
+      </div>
+    </div>
+  </header>
+
+  <% if (user) { %>
+      <script>
+        
+        console.log("cookie = " + document.cookie);
+        function setCookie(cname, cvalue, exdays=1) {
+          var d = new Date();
+          d.setTime(d.getTime() + (exdays*24*60*60*1000));
+          var expires = "expires="+ d.toUTCString();
+          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+        
+        function getCookie(cname) {
+          var name = cname + "=";
+          var decodedCookie = decodeURIComponent(document.cookie);
+          var ca = decodedCookie.split(';');
+          for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+            }
+          }
+          return "";
+        }        
+        
+      function toggleAdminView () {
+        var value = getCookie("adminView");
+        var newValue = value == "on" ? "off" : "on";
+        setCookie("adminView", newValue);
+        console.log("new cookie = " + document.cookie);
+        location.reload();
+      }
+              
+      </script>
+  <div class="nav-scroller py-1 mb-2">
+    <nav class="nav d-flex justify-content-between">
+      <a class="p-2 text-muted" href="/logout">Logout</a>
+      <% if (settings.adminView) { %>
+        <a class="p-2 text-muted" href="#" data-toggle="modal" data-target="#newEventModal">Add Event</a>
+      <% } %>
+      <% if (user.isAdmin) { %>
+              <a class="p-2 text-muted" href="javascript:void(0)" onclick="toggleAdminView();">Toggle Admin</a>
+      <% } %>
+    </nav>
+  </div>
+  <% } %>
+      
+  <%- include('jumboheader'); %>
