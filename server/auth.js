@@ -3,7 +3,7 @@
 const passport = require('passport');
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
 const db = require('./db');
-const {isAdmin} = require('../utils/checkauth');
+const {isAdminUser} = require('../utils/checkauth');
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -50,7 +50,7 @@ passport.use(new OIDCStrategy({
             oid: profile.oid,
             displayName: profile.displayName,
             email: profile.upn,
-            isAdmin: isAdmin(profile.oid)
+            isAdmin: isAdminUser(profile.upn)
           }
           db.users.push(newUser);
           return done(null, newUser);
