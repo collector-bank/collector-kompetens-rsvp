@@ -15,6 +15,7 @@ SESSION_SECRET=<random string for session encryption>
 DBUSERNAME=<user to cosmosdb/mongodb backend database>
 DBPASSWORD=<password to cosmosdb/mongodb backend database>
 HOST=<name of host such as collector-kompetenslunch-rsvp.glitch.me>
+ADMIN_USERS=<a comma separated list of emails identifying admins. no spaces in the list!>
 ```
 
 Azure Web App deploy
