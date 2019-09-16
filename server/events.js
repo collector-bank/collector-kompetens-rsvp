@@ -5,6 +5,9 @@ module.exports = function(app) {
   const asyncHandler = require('express-async-handler');
   const { makeStdViewParams } = require('../utils/viewhelpers');
   const stringify = require('csv-stringify');
+  const ical = require('ical-generator');
+  const cal = ical();
+  const moment = require('moment');
   
   let mkLink = (link) => {
     if (link) {
@@ -95,4 +98,32 @@ module.exports = function(app) {
     stringify(event.participants.map((x) => { return { name:x.name, email:x.email, foodPreference:x.foodPreference } }), { header: true, delimiter:'\t' })
       .pipe(response);   
  }));  
+  
+  app.get('/api/events/:eventId/_ical', asyncHandler(async function(request, response) {
+    const event = await db.getEvent(request.params.eventId);
+        
+    const startTime = moment(event.startTime, 'HH:mm').utcOffset(-120)
+    const endTime = moment(event.endTime, 'HH:mm').utcOffset(-120)
+    
+    const start = moment(event.date).set({ 'hour': startTime.get('hour'), 'minute': startTime.get('minute') });
+    const end = moment(event.date).set({ 'hour': endTime.get('hour'), 'minute': endTime.get('minute') });
+    
+    const cal = ical({
+        domain: request.headers.host,
+        prodId: {company: 'collectorbank.se', product: 'kompetens-rsvp'},
+        name: "Kompetens @ Collector",
+        timezone: 'Europe/Stockholm',
+        events: [
+            {
+                start: start,
+                end: end,
+                timestamp: moment(),
+                summary: event.title
+            }
+        ]      
+    });
+        
+    cal.serve(response);
+  }));
+  
 }

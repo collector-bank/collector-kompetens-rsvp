@@ -29,5 +29,5 @@ Preconditions:
 
 Steps:
   1. git clone https://github.com/collector-bank/collector-kompetens-rsvp.git
-  2. git remove add azure `https://<webapp-name>.scm.azurewebsites.net:443/<webapp-name>.git`
+  2. git remote add azure `https://<webapp-name>.scm.azurewebsites.net:443/<webapp-name>.git`
   3. git push azure
