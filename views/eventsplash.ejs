@@ -5,8 +5,11 @@
           <h3 class="mb-0"><%= event.title %></h3>
           <div class="mb-1 text-muted">
             <%=
-              [event.date ? `${moment(event.date).format('YYYY-MM-DD')} (${moment(event.date).fromNow()})` : "",  [ event.startTime, event.endTime ].filter(x => x).join(" - ") ].filter(x => x).join(" | ")
+              [ event.date ? `${moment(event.date).format('YYYY-MM-DD')} (${moment(event.date).fromNow()})` : ""
+              , [ event.startTime, event.endTime ].filter(x => x).join(" - ")
+              ].filter(x => x).join(" | ")
             %> 
+            | <a href="/api/events/<%=event._id%>/_ical" class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i></a>
           </div>
           <p class="card-text mb-auto"><%= event.description %></p>
           
