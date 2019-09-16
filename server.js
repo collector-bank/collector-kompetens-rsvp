@@ -12,6 +12,7 @@ const events = require('./server/events');
 const auth = require('./server/auth');
 const asyncHandler = require('express-async-handler');
 const { makeStdViewParams } = require('./utils/viewhelpers');
+const { decorateEventWithQualifiedTimes } = require('./utils/datetimeutils');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -27,7 +28,7 @@ auth(app);
 
 app.get('/', asyncHandler(async function(request, response) {  
   var events = await db.getFutureEventsOrderedByDate();
-  response.render('index.ejs', { ...makeStdViewParams(request), events });
+  response.render('index.ejs', { ...makeStdViewParams(request), events:events.map((x) => decorateEventWithQualifiedTimes(x)) });
 }));
 
 app.get('/clientsettings/set', function(request, response) {  

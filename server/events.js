@@ -8,6 +8,7 @@ module.exports = function(app) {
   const ical = require('ical-generator');
   const cal = ical();
   const moment = require('moment');
+  const { decorateEventWithQualifiedTimes } = require('../utils/datetimeutils');
   
   let mkLink = (link) => {
     if (link) {
@@ -101,12 +102,7 @@ module.exports = function(app) {
   
   app.get('/api/events/:eventId/_ical', asyncHandler(async function(request, response) {
     const event = await db.getEvent(request.params.eventId);
-        
-    const startTime = moment(event.startTime, 'HH:mm').utcOffset(-120)
-    const endTime = moment(event.endTime, 'HH:mm').utcOffset(-120)
-    
-    const start = moment(event.date).set({ 'hour': startTime.get('hour'), 'minute': startTime.get('minute') });
-    const end = moment(event.date).set({ 'hour': endTime.get('hour'), 'minute': endTime.get('minute') });
+    const eventEx = decorateEventWithQualifiedTimes(event);    
     
     const cal = ical({
         domain: request.headers.host,
@@ -115,8 +111,8 @@ module.exports = function(app) {
         timezone: 'Europe/Stockholm',
         events: [
             {
-                start: start,
-                end: end,
+                start: eventEx.qualifiedStartTime,
+                end: eventEx.qualifiedEndTime,
                 timestamp: moment(),
                 summary: event.title
             }

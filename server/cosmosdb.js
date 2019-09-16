@@ -28,7 +28,8 @@ module.exports = {
   getFutureEventsOrderedByDate: async function() {
     let db = await getEventsCollection();
     let now = new Date();      
-    const findCondition = { $or: [{date: null}, {date: {$gte: new Date()}}] } 
+    now.setHours(0,0,0,0)
+    const findCondition = { $or: [{date: null}, {date: {$gte: now }}] } 
     let result =  db.find(findCondition).sort({ date: 1 }).toArray();   
     return result;
   },
