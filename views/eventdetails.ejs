@@ -31,14 +31,16 @@
             <td><%= participant.foodPreference %></td>          
             <td><%= participant.guestTo %></td>
             <td>
-              <% if (settings.adminView) { %>
-                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove</a>            
-              <% } else { %>            
-                <% if (participant.email == user.email) { %>
-                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=/eventdetails/<%=event._id%>">Remove</a>            
-                <% } %>
-                <% if (participant.guestTo == user.email) { %>
-                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove Guest</a>
+              <% if (event.state == "Open") { %>
+                <% if (settings.adminView) { %>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove</a>            
+                <% } else { %>            
+                  <% if (participant.email == user.email) { %>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=/eventdetails/<%=event._id%>">Remove</a>            
+                  <% } %>
+                  <% if (participant.guestTo == user.email) { %>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove Guest</a>
+                  <% } %>
                 <% } %>
               <% } %>
             </td>

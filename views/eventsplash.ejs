@@ -39,8 +39,8 @@
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalGuest<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
                     Add Guest
                   </button>              
-                  <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
                 <% } %>
+                <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
                 <% if (settings.adminView) { %>
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>                
                   <a class="btn btn-sm btn-outline-secondary"href="/api/events/<%=event._id%>/_delete">Delete</a>                

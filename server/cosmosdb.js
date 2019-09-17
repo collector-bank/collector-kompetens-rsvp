@@ -3,7 +3,7 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const url = `mongodb://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBUSERNAME}.documents.azure.com:10255/?ssl=true&replicaSet=globaldb`
-const { isAdmin } = require('../utils/checkauth');
+const { isAdminUser } = require('../utils/checkauth');
 
 const dbName = process.env.DBNAME != null ? process.env.DBNAME : 'rsvp';
 
@@ -63,6 +63,7 @@ module.exports = {
       await db
         .updateOne(
           { _id: ObjectID(eventId)
+          , state: "Open"
           , 'participants.email': {$ne: participant.email}
           , 'participants': {$size: event.participants.length}  // cosmosdb mongodb interface does not support 'participants': {$size: {$lt: "$maxParticipants"}} so this is a poor mans solution
           }, 
@@ -72,13 +73,14 @@ module.exports = {
   
   leaveEvent: async function(eventId, user) {      
     let db = await getEventsCollection();
-    await db.updateOne({ _id: ObjectID(eventId) }, { $pull: { participants: { email: user.email} } } );
+    let condition = { _id: ObjectID(eventId), state: "Open" }
+    await db.updateOne(condition, { $pull: { participants: { email: user.email} } } );
   },
 
   leaveEventGuest: async function(eventId, user, guestEmail) {      
     let db = await getEventsCollection();
-    let condition = { _id: ObjectID(eventId) }
-    if (!isAdmin(user.oid)) {
+    let condition = { _id: ObjectID(eventId), state: "Open" }
+    if (!isAdminUser(user.email)) {
       condition['participants.guestTo'] = user.email
     }
     await db.updateOne(condition, { $pull: { participants: { email: guestEmail} } } );
