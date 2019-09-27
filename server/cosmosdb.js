@@ -23,8 +23,20 @@ async function getEventsCollection() {
   return db.collection('events'); 
 }
 
+async function getRulesCollection() {
+  const { db } = await getDb();
+  return db.collection('rules');   
+}
+
 module.exports = {
-    
+
+  findEvents: async function(state, eventType, minDate, maxDate) {
+    let db = await getEventsCollection();
+    const findCondition = { $and: [{qualifiedStartTime: {$gte: minDate}}, {qualifiedStartTime: {$lte: maxDate }}], state: state, eventType: eventType } 
+    let result =  db.find(findCondition).toArray();   
+    return result;  
+  },
+  
   getFutureEventsOrderedByDate: async function() {
     let db = await getEventsCollection();
     let now = new Date();      
@@ -42,12 +54,12 @@ module.exports = {
   
   addEvent: async function(event) {    
     let db = await getEventsCollection();
-    await db.insertOne({ ...event, date: new Date(event.date) } );
+    await db.insertOne(event);
   },
   
   updateEvent: async function(eventId, event) {
     let db = await getEventsCollection();
-    await db.updateOne({ _id: ObjectID(eventId) }, { $set:{...event, date: new Date(event.date) } });
+    await db.updateOne({ _id: ObjectID(eventId) }, { $set: event });
   },
  
   deleteEvent: async function(eventId) {
@@ -85,5 +97,16 @@ module.exports = {
       condition['participants.guestTo'] = user.email.toLowerCase()
     }
     await db.updateOne(condition, { $pull: { participants: { email: guestEmail.toLowerCase()} } } );
+  },
+  
+  getRuleMatches: async function(ruleId) {
+    let db = await getRulesCollection();
+    let rule = await db.findOne({ _id: ObjectID(ruleId) });
+    return rule ? rule.matches : [];
+  },
+  
+  addRuleMatches: async function(ruleId, entityIds) {
+    let db = await getRulesCollection();
+    await db.updateOne({ _id: ObjectID(ruleId) }, { $addToSet: { matches: {$each: entityIds} } }, { upsert: true } );
   }  
 }

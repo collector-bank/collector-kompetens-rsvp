@@ -1,4 +1,5 @@
 const dbdriver = require('./cosmosdb');
+const { decorateEventWithQualifiedTimes } = require('../utils/datetimeutils');
 
 module.exports = {
   /*
@@ -30,6 +31,10 @@ module.exports = {
     return fn(null, null);
   },
     
+  findEvents: function(state, eventType, minDate, maxDate) {
+    return dbdriver.findEvents(state, eventType, minDate, maxDate);
+  },
+  
   getFutureEventsOrderedByDate: function() {
     return dbdriver.getFutureEventsOrderedByDate();
   },
@@ -39,11 +44,13 @@ module.exports = {
   },
   
   addEvent(event) {
-    dbdriver.addEvent(event);
+    const now = new Date();
+    dbdriver.addEvent({...decorateEventWithQualifiedTimes(event), createdAt: now, lastModified: now });
   },
   
   updateEvent(eventId, event) {
-    dbdriver.updateEvent(eventId, event);
+    const now = new Date();
+    dbdriver.updateEvent(eventId, {...decorateEventWithQualifiedTimes(event), lastModified: now });
   },
  
   deleteEvent(eventId) {
@@ -60,5 +67,13 @@ module.exports = {
   
   leaveEventGuest(eventId, user, guestEmail) {
     dbdriver.leaveEventGuest(eventId, user, guestEmail);          
+  },
+  
+  getRuleMatches(ruleId) {
+    return dbdriver.getRuleMatches(ruleId);    
+  },
+  
+  addRuleMatches(ruleId, entityIds) {
+    dbdriver.addRuleMatches(ruleId, entityIds);      
   }
 }

@@ -13,12 +13,14 @@ const auth = require('./server/auth');
 const asyncHandler = require('express-async-handler');
 const { makeStdViewParams } = require('./utils/viewhelpers');
 const { decorateEventWithQualifiedTimes } = require('./utils/datetimeutils');
+const automation = require('./server/automation');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(expressSession({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -28,7 +30,7 @@ auth(app);
 
 app.get('/', asyncHandler(async function(request, response) {  
   var events = await db.getFutureEventsOrderedByDate();
-  response.render('index.ejs', { ...makeStdViewParams(request), events:events.map((x) => decorateEventWithQualifiedTimes(x)) });
+  response.render('index.ejs', { ...makeStdViewParams(request), events });
 }));
 
 app.get('/clientsettings/set', function(request, response) {  
@@ -37,6 +39,7 @@ app.get('/clientsettings/set', function(request, response) {
 });
 
 events(app);
+automation(app);
 
 const listener = app.listen(process.env.PORT, function() {
   console.log('App is listening on port ' + listener.address().port);
