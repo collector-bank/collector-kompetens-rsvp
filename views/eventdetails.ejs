@@ -13,6 +13,14 @@
 </h4>
 
 <p>
+<% if (event.participants.length < event.maxParticipants) { %>
+  <%= event.maxParticipants - event.participants.length %> seat(s) left.
+<% } else { %> 
+  No seats left.
+<% } %>  
+</p>
+
+<p>
   <table class="table">
     <thead>
       <tr>

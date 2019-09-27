@@ -42,12 +42,12 @@ module.exports = {
   
   addEvent: async function(event) {    
     let db = await getEventsCollection();
-    await db.insertOne({ ...event, date: event.date ? new Date(event.date) : null } );
+    await db.insertOne({ ...event, date: new Date(event.date) } );
   },
   
   updateEvent: async function(eventId, event) {
     let db = await getEventsCollection();
-    await db.updateOne({ _id: ObjectID(eventId) }, { $set:{...event, date: event.date ? new Date(event.date) : null } });
+    await db.updateOne({ _id: ObjectID(eventId) }, { $set:{...event, date: new Date(event.date) } });
   },
  
   deleteEvent: async function(eventId) {
@@ -55,16 +55,17 @@ module.exports = {
     await db.deleteOne({ _id: ObjectID(eventId) });
   },
   
-  addParticipantToEvent: async function(eventId, participant) {
+  addParticipantToEvent: async function(eventId, participantIn) {
     let db = await getEventsCollection();
     let event = await db.findOne({ _id: ObjectID(eventId)});
+    let participant = { ...participantIn, email: participantIn.email.toLowerCase() }
     if (event.participants.length < event.maxParticipants)  
     {
       await db
         .updateOne(
           { _id: ObjectID(eventId)
           , state: "Open"
-          , 'participants.email': {$ne: participant.email}
+          , 'participants.email': {$ne: participant.email }
           , 'participants': {$size: event.participants.length}  // cosmosdb mongodb interface does not support 'participants': {$size: {$lt: "$maxParticipants"}} so this is a poor mans solution
           }, 
           { $push: { participants: participant } } );      
@@ -81,8 +82,8 @@ module.exports = {
     let db = await getEventsCollection();
     let condition = { _id: ObjectID(eventId), state: "Open" }
     if (!isAdminUser(user.email)) {
-      condition['participants.guestTo'] = user.email
+      condition['participants.guestTo'] = user.email.toLowerCase()
     }
-    await db.updateOne(condition, { $pull: { participants: { email: guestEmail} } } );
+    await db.updateOne(condition, { $pull: { participants: { email: guestEmail.toLowerCase()} } } );
   }  
 }
