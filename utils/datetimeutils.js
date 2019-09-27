@@ -13,5 +13,12 @@ module.exports = {
       qualifiedStartTime: makeDateTime(event.date, event.startTime), 
       qualifiedEndTime: makeDateTime(event.date, event.endTime) 
     }
-  }
+  },
+  
+  // Ref: https://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
+  getNextDayOfWeek: function (date, dayOfWeek) {
+    var resultDate = new Date(date.getTime());
+    resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
+    return resultDate;
+  }  
 }

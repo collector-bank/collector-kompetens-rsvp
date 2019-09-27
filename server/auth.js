@@ -49,7 +49,7 @@ passport.use(new OIDCStrategy({
           var newUser = {
             oid: profile.oid,
             displayName: profile.displayName,
-            email: profile.upn,
+            email: profile.upn.toLowerCase(),
             isAdmin: isAdminUser(profile.upn)
           }
           db.users.push(newUser);

@@ -9,11 +9,11 @@
         %>
       
       <div class="row mb-2">
-        <%- include('eventsplash', { event, user }); %>
+        <%- include('eventsplash', { event, user, moment }); %>
       </div>
       
   <% } %>
 
-<%- include('neweventmodal'); %>
+<%- include('neweventmodal', { event, user, moment }); %>
 
 
