@@ -9,12 +9,16 @@ function makeDateTime(date, time) {
 module.exports = {
   
   decorateEventWithQualifiedTimes: function(event) {
-    var date = new Date(event.date);    
-    return { 
-      ...event, 
-      date,
-      qualifiedStartTime: makeDateTime(date, event.startTime), 
-      qualifiedEndTime: makeDateTime(date, event.endTime) 
+    if (event.date) {
+      var date = new Date(event.date);    
+      return { 
+        ...event, 
+        date,
+        qualifiedStartTime: makeDateTime(date, event.startTime), 
+        qualifiedEndTime: makeDateTime(date, event.endTime) 
+      }      
+    } else {
+      return event;
     }
   }
   

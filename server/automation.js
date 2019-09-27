@@ -25,7 +25,8 @@ function sendMail(args, context) {
   console.log("sending mail: " + JSON.stringify(args));
   
   let msg = {
-    to: args.to[0],
+    to: args.to == "[[[ADMINS]]]" ? adminUsers : args.to,
+    cc: args.cc == "[[[ADMINS]]]" ? adminUsers : args.cc,
     from: "no.reply.kompetensgruppen@collectorbank.se",
     subject: ejs.render(args.subject, { event: context }),
     text: ejs.render(args.text, { event: context })
@@ -58,14 +59,11 @@ async function evalRule(rule) {
       let match = decorateEventWithQualifiedTimes(matchIn);
       rule.actions.forEach(action => {
         switch(action.type) {
-          case 'mailAdmins':
-            sendMail({ ...action.args, to:adminUsers}, match);
-            break;
           case 'mail': 
             sendMail(action.args, match);
             break;
           case 'closeEvent':
-            db.updateEvent(match._id, { 'state': 'Closed' });
+            db.updateEvent(match._id, { state: 'Closed' });
             break;
         }        
       });
@@ -80,6 +78,7 @@ async function evalRule(rule) {
 module.exports = function(app) {
 
   app.post('/api/automation/_eval', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    console.log(JSON.stringify(request.body.rules));
     let result = []
     for(let rule of request.body.rules)
     {
