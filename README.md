@@ -41,7 +41,7 @@ Example of a ruleset.
 {
      "rules": [
           {
-               "id": "5d8e2b93abe8268f25027d07",
+               "id": "5d8e880b5205df7345d9b1b7",
                "match": {
                     "entity": "Event",
                     "state": "Open",
@@ -50,21 +50,22 @@ Example of a ruleset.
                },
                "actions": [
                     {
-                         "type": "mailAdmins",
+                         "type": "mail",
                          "args": {
-                              "subject": "Warning: Event <%= event.title %> is still open",
-                              "text": "Food will be automatically ordered in two hours for event <%= event.title %>"
+                              "subject": "Heads up: Event <%= event.title %> is still open",
+                              "text": "Automatic rules will close the event and order food in an hour or so, if the event remains open.",
+                              "to": "[[[ADMINS]]]"
                          }
                     }
                ]
           },
           {
-               "id": "5d8e2baed8f59a82f105d61b",
+               "id": "5d8e88149b8cc11234717164",
                "match": {
                     "entity": "Event",
                     "state": "Open",
                     "eventType": "Lunch",
-                    "dueInHours": 5
+                    "dueInHours": 23
                },
                "actions": [
                     {
@@ -73,11 +74,10 @@ Example of a ruleset.
                     {
                          "type": "mail",
                          "args": {
-                              "subject": "Food for event ${event.title} thas is taking place tomorrow",
-                              "text": "Many thanks!",
-                              "to": [
-                                   "test@test.com"
-                              ],
+                              "subject": "Beställning av mat till morgondagens kompetenslunch (<%= event.title %>)",
+                              "text": "Hej! Här kommer matbeställning. Tack för hjälpen! Mvh Kompetensgruppen",
+                              "to": [ "$receptionMail" ],
+                              "cc": "[[[ADMINS]]]",
                               "attachParticipantsList": true
                          }
                     }
@@ -91,6 +91,11 @@ Example of a ruleset.
 
 Evaluate the ruleset using
 ```powershell
-$ruleSet = ... # from above
-Invoke-RestMethod -Uri https://hostname/api/automation/_eval -Method Post -Headers @{ "X-Api-Key" = "..." } -Body $ruleSet -ContentType "application/json"
+$rules = ... # from above
+Invoke-RestMethod `
+   -Uri https://collector-bank-collector-kompetens-rsvp.glitch.me/api/automation/_eval `
+   -Method Post `
+   -Headers @{ "X-Api-Key" = "...." } `
+   -Body $rules `
+   -ContentType "application/json; charset=utf-8"
 ```
