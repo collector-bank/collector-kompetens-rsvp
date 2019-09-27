@@ -1,7 +1,7 @@
 module.exports = function(app) {
   
   const db = require('./db');
-  const {ensureAuthenticated} = require('../utils/checkauth.js');
+  const {ensureAuthenticated} = require('../utils/checkauth');
   const asyncHandler = require('express-async-handler');
   const { makeStdViewParams } = require('../utils/viewhelpers');
   const stringify = require('csv-stringify');
@@ -96,7 +96,7 @@ module.exports = function(app) {
     response.setHeader('Content-Type', 'text/csv;charset=utf-8');
     response.setHeader('Content-Disposition', 'attachment; filename=\"' + 'participants-in-' + event.title.toLowerCase().replace(/\s/g,'-') + '.csv\"');
     response.write("\uFEFF");  // send BOM to make Excel happy
-    stringify(event.participants.map((x) => { return { name:x.name, email:x.email, foodPreference:x.foodPreference } }), { header: true, delimiter:'\t' })
+    stringify(event.participants.map((x) => { return { 'Name':x.name, 'Email':x.email, 'Food Preference':x.foodPreference } }), { header: true, delimiter:'\t' })
       .pipe(response);   
  }));  
   
@@ -109,6 +109,7 @@ module.exports = function(app) {
         prodId: {company: 'collectorbank.se', product: 'kompetens-rsvp'},
         name: "Kompetens @ Collector",
         timezone: 'Europe/Stockholm',
+//        method: 'request',
         events: [
             {
                 start: eventEx.qualifiedStartTime,
@@ -121,5 +122,4 @@ module.exports = function(app) {
         
     cal.serve(response);
   }));
-  
 }

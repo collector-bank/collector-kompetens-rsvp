@@ -1,24 +1,21 @@
 const moment = require('moment');
 
-function makeDateTime(date, time, utcOffset = -120) {
-  const parsedTime = moment(time, 'HH:mm').utcOffset(utcOffset)    
-  return moment(date).set({ 'hour': parsedTime.get('hour'), 'minute': parsedTime.get('minute') });  
+function makeDateTime(date, time) {
+  // we can sefaely assume that the date and time is swedish time, so lets define that 
+  const parsedTime = moment(time, 'HH:mm') 
+  return moment.tz(date, "Europe/Stockholm").set({ 'hour': parsedTime.get('hour'), 'minute': parsedTime.get('minute') }).toDate();  
 }
 
 module.exports = {
   
   decorateEventWithQualifiedTimes: function(event) {
+    var date = new Date(event.date);    
     return { 
       ...event, 
-      qualifiedStartTime: makeDateTime(event.date, event.startTime), 
-      qualifiedEndTime: makeDateTime(event.date, event.endTime) 
+      date,
+      qualifiedStartTime: makeDateTime(date, event.startTime), 
+      qualifiedEndTime: makeDateTime(date, event.endTime) 
     }
-  },
+  }
   
-  // Ref: https://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
-  getNextDayOfWeek: function (date, dayOfWeek) {
-    var resultDate = new Date(date.getTime());
-    resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-    return resultDate;
-  }  
 }

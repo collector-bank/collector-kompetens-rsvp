@@ -21,7 +21,9 @@
     "mongodb-core": "^3.2.6",
     "express-async-handler": "^1.1.4",
     "csv-stringify": "^5.3.3",
-    "ical-generator": "^1.8.1"
+    "ical-generator": "^1.8.1",
+    "@sendgrid/mail": "^6.4.0",
+    "moment-timezone": "^0.5.26"
   },
   "engines": {
     "node": "8.x"
