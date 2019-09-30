@@ -5,6 +5,7 @@ const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const stringify = require('csv-stringify/lib/sync');
+const { eventParticipantListAsExcel } = require('../utils/export');
 const { decorateEventWithQualifiedTimes } = require('../utils/datetimeutils');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -34,14 +35,14 @@ function sendMail(args, context) {
   
   if (args.attachParticipantsList && context.participants && context.participants.length > 0) {
     
-    let data = stringify(context.participants);
+    let data = eventParticipantListAsExcel(context); // stringify(context.participants);
     let buff = new Buffer(data);
     let base64data = buff.toString('base64');    
     msg.attachments = [
       {
         content: base64data,
-        filename: 'participants.csv',
-        type: 'text/csv',
+        filename: 'participants-in-' + context.title.toLowerCase().replace(/\s/g,'-') + '.xlsx',
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         disposition: 'attachment',
         contentId: 'participants-' + context._id 
       }

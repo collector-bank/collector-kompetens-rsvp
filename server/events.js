@@ -4,11 +4,11 @@ module.exports = function(app) {
   const {ensureAuthenticated} = require('../utils/checkauth');
   const asyncHandler = require('express-async-handler');
   const { makeStdViewParams } = require('../utils/viewhelpers');
-  const stringify = require('csv-stringify');
   const ical = require('ical-generator');
   const cal = ical();
   const moment = require('moment');
   const { decorateEventWithQualifiedTimes } = require('../utils/datetimeutils');
+  const { sendEventParticipantListAsCsv, sendEventParticipantListAsExcel } = require('../utils/export');
   
   let mkLink = (link) => {
     if (link) {
@@ -93,11 +93,12 @@ module.exports = function(app) {
   
  app.get('/api/events/:eventId/_downloadparticipantscsv', ensureAuthenticated, asyncHandler(async function (request, response) {
     const event = await db.getEvent(request.params.eventId);
-    response.setHeader('Content-Type', 'text/csv;charset=utf-8');
-    response.setHeader('Content-Disposition', 'attachment; filename=\"' + 'participants-in-' + event.title.toLowerCase().replace(/\s/g,'-') + '.csv\"');
-    response.write("\uFEFF");  // send BOM to make Excel happy
-    stringify(event.participants.map((x) => { return { 'Name':x.name, 'Email':x.email, 'Food Preference':x.foodPreference } }), { header: true, delimiter:'\t' })
-      .pipe(response);   
+    sendEventParticipantListAsCsv(event, response);
+ }));  
+
+ app.get('/api/events/:eventId/_downloadparticipantsexcel', ensureAuthenticated, asyncHandler(async function (request, response) {
+    const event = await db.getEvent(request.params.eventId);
+    sendEventParticipantListAsExcel(event, response);
  }));  
   
   app.get('/api/events/:eventId/_ical', asyncHandler(async function(request, response) {
