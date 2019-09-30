@@ -99,14 +99,30 @@ module.exports = {
     await db.updateOne(condition, { $pull: { participants: { email: guestEmail.toLowerCase()} } } );
   },
   
-  getRuleMatches: async function(ruleId) {
+  addRule: async function(rule) {
+    console.log("adding rule " + rule);
+    let db = await getRulesCollection();
+    db.insertOne(rule);
+  },
+
+  getRules: async function() {
+    let db = await getRulesCollection();
+    return await db.find().toArray();
+  },
+  
+  getRuleById: async function(ruleId) {
     let db = await getRulesCollection();
     let rule = await db.findOne({ _id: ObjectID(ruleId) });
-    return rule ? rule.matches : [];
+    return rule;
+  },
+
+  deleteRule: async function(ruleId) {
+    let db = await getRulesCollection();
+    await db.deleteOne({ _id: ObjectID(ruleId) });
   },
   
   addRuleMatches: async function(ruleId, entityIds) {
     let db = await getRulesCollection();
-    await db.updateOne({ _id: ObjectID(ruleId) }, { $addToSet: { matches: {$each: entityIds} } }, { upsert: true } );
-  }  
+    await db.updateOne({ _id: ObjectID(ruleId) }, { $addToSet: { matches: {$each: entityIds} } } );
+  }
 }

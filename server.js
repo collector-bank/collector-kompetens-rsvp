@@ -13,7 +13,7 @@ const auth = require('./server/auth');
 const asyncHandler = require('express-async-handler');
 const { makeStdViewParams } = require('./utils/viewhelpers');
 const { decorateEventWithQualifiedTimes } = require('./utils/datetimeutils');
-const automation = require('./server/automation');
+const rules = require('./server/rules');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -39,7 +39,7 @@ app.get('/clientsettings/set', function(request, response) {
 });
 
 events(app);
-automation(app);
+rules(app);
 
 const listener = app.listen(process.env.PORT, function() {
   console.log('App is listening on port ' + listener.address().port);
