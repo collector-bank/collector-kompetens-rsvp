@@ -68,7 +68,8 @@
 
 <p>
   <% if (settings.adminView) { %>
-      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export</a>            
+      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export Csv</a>            
+      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantsexcel">Export Excel</a>            
   <% } %>  
   <a class="btn btn-sm btn-outline-secondary" href="/">Back to events</a>            
 </p>
