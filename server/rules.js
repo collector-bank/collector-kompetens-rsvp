@@ -32,7 +32,7 @@ function sendMail(args, context) {
     text: ejs.render(args.text, { event: context })
   };
   
-  if (args.attachParticipantsList) {
+  if (args.attachParticipantsList && context.participants && context.participants.length > 0) {
     
     let data = stringify(context.participants);
     let buff = new Buffer(data);
@@ -54,12 +54,12 @@ function sendMail(args, context) {
 
 async function evalRule(rule) {  
   const matches = await findMatches(rule.match);
-  let alreadyApplied = (await db.getRuleMatches(rule.id)).map(x => x.toString());
+  let alreadyApplied = rule.matches || [];
   const applied = matches.filter(match => !alreadyApplied.includes(match._id.toString())).map(matchIn => {
       let match = decorateEventWithQualifiedTimes(matchIn);
       rule.actions.forEach(action => {
         switch(action.type) {
-          case 'mail': 
+          case 'sendMail': 
             sendMail(action.args, match);
             break;
           case 'closeEvent':
@@ -71,16 +71,31 @@ async function evalRule(rule) {
       return match._id;
   });
   
-  db.addRuleMatches(rule.id, applied);    
-  return { ruleid: rule.id, entityIds: applied };
+  db.addRuleMatches(rule._id, applied);    
+  return { ruleid: rule._id, entityIds: applied };
 }
 
 module.exports = function(app) {
 
-  app.post('/api/automation/_eval', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
-    console.log(JSON.stringify(request.body.rules));
+  app.post('/api/rules/', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    await db.addRule(request.body);
+    response.sendStatus(201);
+  }));
+
+  app.get('/api/rules/', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    let rules = await db.getRules();
+    response.json(rules);
+  }));
+
+  app.delete('/api/rules/:ruleId', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    await db.deleteRule(request.params.ruleId);
+    response.sendStatus(200);
+  }));
+  
+  app.get('/api/rules/_eval', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    let rules = await db.getRules();
     let result = []
-    for(let rule of request.body.rules)
+    for(let rule of rules)
     {
       const temp = await evalRule(rule);
       result.push(temp)

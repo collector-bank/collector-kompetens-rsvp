@@ -36,66 +36,87 @@ Steps:
 
 Rule configuration
 ------------------
-Example of a ruleset.
+Example rule 1.
 ```json
 {
-     "rules": [
+     "id": "5d8e880b5205df7345d9b1b7",
+     "match": {
+          "entity": "Event",
+          "state": "Open",
+          "eventType": "Lunch",
+          "dueInHours": 24
+     },
+     "actions": [
           {
-               "id": "5d8e880b5205df7345d9b1b7",
-               "match": {
-                    "entity": "Event",
-                    "state": "Open",
-                    "eventType": "Lunch",
-                    "dueInHours": 24
-               },
-               "actions": [
-                    {
-                         "type": "mail",
-                         "args": {
-                              "subject": "Heads up: Event <%= event.title %> is still open",
-                              "text": "Automatic rules will close the event and order food in an hour or so, if the event remains open.",
-                              "to": "[[[ADMINS]]]"
-                         }
-                    }
-               ]
-          },
-          {
-               "id": "5d8e88149b8cc11234717164",
-               "match": {
-                    "entity": "Event",
-                    "state": "Open",
-                    "eventType": "Lunch",
-                    "dueInHours": 23
-               },
-               "actions": [
-                    {
-                         "type": "closeEvent"
-                    },
-                    {
-                         "type": "mail",
-                         "args": {
-                              "subject": "Beställning av mat till morgondagens kompetenslunch (<%= event.title %>)",
-                              "text": "Hej! Här kommer matbeställning. Tack för hjälpen! Mvh Kompetensgruppen",
-                              "to": [ "$receptionMail" ],
-                              "cc": "[[[ADMINS]]]",
-                              "attachParticipantsList": true
-                         }
-                    }
-               ]
+               "type": "sendMail",
+               "args": {
+                    "subject": "Heads up: Event <%= event.title %> is still open",
+                    "text": "Automatic rules will close the event and order food in an hour or so, if the event remains open.",
+                    "to": "[[[ADMINS]]]"
+               }
           }
      ]
 }
 ```
 
-*Rule ids can be generated here https://observablehq.com/@hugodf/mongodb-objectid-generator*
+Example rule 2:
+```json
+{
+     "id": "5d8e88149b8cc11234717164",
+     "match": {
+          "entity": "Event",
+          "state": "Open",
+          "eventType": "Lunch",
+          "dueInHours": 23
+     },
+     "actions": [
+          {
+               "type": "closeEvent"
+          },
+          {
+               "type": "sendMail",
+               "args": {
+                    "subject": "Beställning av mat till morgondagens kompetenslunch (<%= event.title %>)",
+                    "text": "Hej! Här kommer matbeställning. Tack för hjälpen! Mvh Kompetensgruppen",
+                    "to": [ "$receptionMail" ],
+                    "cc": "[[[ADMINS]]]",
+                    "attachParticipantsList": true
+               }
+          }
+     ]
+}
+```
 
-Evaluate the ruleset using
+
+Api calls:
 ```powershell
-$rules = ... # from above
+$hostname = "collector-bank-collector-kompetens-rsvp.glitch.me"
+$apiKey = "..."
+
+# Add a rule
 Invoke-RestMethod `
-   -Uri https://collector-bank-collector-kompetens-rsvp.glitch.me/api/automation/_eval `
+   -Uri "https://$hostname/api/rules/" `
    -Method Post `
-   -Headers @{ "X-Api-Key" = "...." } `
-   -Body $rules `
+   -Headers @{ "X-Api-Key" = $apiKey } `
+   -Body $rule `
    -ContentType "application/json; charset=utf-8"
+   
+# Get configured rules
+Invoke-RestMethod `
+     -Uri "https://$hostname/api/rules/" `
+     -Method GET `
+     -Headers @{ "X-Api-Key" = $apiKey }
+       
+# Evaluate rules       
+Invoke-RestMethod `
+       -Uri "https://$hostname/api/rules/_eval" `
+       -Method GET `
+       -Headers @{ "X-Api-Key" = $apiKey }
+       
+# Delete a rule
+$id = ...
+Invoke-RestMethod `
+       -Uri "https://$hostname/api/rules/$id" `
+       -Method DELETE `
+       -Headers @{ "X-Api-Key" = $apiKey }       
 ```

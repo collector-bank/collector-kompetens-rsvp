@@ -69,11 +69,23 @@ module.exports = {
     dbdriver.leaveEventGuest(eventId, user, guestEmail);          
   },
   
-  getRuleMatches(ruleId) {
-    return dbdriver.getRuleMatches(ruleId);    
+  addRule(rule) {
+    return dbdriver.addRule(rule);
+  },
+  
+  getRules() {
+    return dbdriver.getRules()
+  },
+  
+  getRuleById(ruleId) {
+    return dbdriver.getRuleById(ruleId);    
   },
   
   addRuleMatches(ruleId, entityIds) {
     dbdriver.addRuleMatches(ruleId, entityIds);      
+  },
+  
+  deleteRule(ruleId) {
+    dbdriver.deleteRule(ruleId);      
   }
 }
