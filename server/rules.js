@@ -28,7 +28,7 @@ function sendMail(args, context) {
   let msg = {
     to: args.to == "[[[ADMINS]]]" ? adminUsers : args.to,
     cc: args.cc == "[[[ADMINS]]]" ? adminUsers : args.cc,
-    from: "no.reply.kompetensgruppen@collectorbank.se",
+    from: args.from || "no.reply.kompetensgruppen@collectorbank.se",
     subject: ejs.render(args.subject, { event: context }),
     text: ejs.render(args.text, { event: context })
   };
