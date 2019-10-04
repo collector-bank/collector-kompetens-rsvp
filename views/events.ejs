@@ -1,0 +1,37 @@
+<%- include('pageheader'); %>
+  
+  <% if (events.length == 0) { %>
+     <%- include('noeventsplash'); %>
+  <% } %>
+      
+  <% for(let i=0; i<events.length; i+=1) {
+        var event = events[i];
+        %>
+      
+      <div class="row mb-2">
+        <%- include('eventsplash', { event, user, moment }); %>
+      </div>
+      
+  <% } %>
+
+<%- include('neweventmodal', { event, user, moment }); %>
+
+<% if (!pagination.isOnlyPage) { %>
+<div class="container" style="margin-bottom: 12px">
+  <div class="row">
+    <% if (!pagination.isFirstPage) { %>
+    <div class="col-md-auto anonymous-link">      
+      <a href="<%= pagination.prevLink %>"><i class="fas fa-chevron-left"></i></a>
+    </div>
+    <% } %>
+    <div class="col">
+    </div>
+    <% if (!pagination.isLastPage) { %>
+    <div class="col-md-auto anonymous-link">
+      <a href="<%= pagination.nextLink %>"><i class="fas fa-chevron-right"></i></a>    
+    </div>
+    <% } %>
+  </div>
+</div>
+<% } %>
+<%- include('pagefooter'); %>

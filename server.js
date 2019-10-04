@@ -29,8 +29,7 @@ app.use(express.static('public'));
 auth(app);
 
 app.get('/', asyncHandler(async function(request, response) {  
-  var events = await db.getFutureEventsOrderedByDate();
-  response.render('index.ejs', { ...makeStdViewParams(request), events });
+    response.redirect('/events');
 }));
 
 app.get('/clientsettings/set', function(request, response) {  

@@ -8,9 +8,16 @@
   <%= event.description %>  
 </p>
 
+
 <h4>
   Participants
 </h4>
+<% if (!user) { %>
+<p>
+  Login to view participants.
+</p>
+
+<% } else { %>
 
 <p>
 <% if (event.state == 'Closed') { %>
@@ -66,8 +73,10 @@
   </table>
 </p>
 
+<% } // if user %>
+
 <p>
-  <% if (settings.adminView) { %>
+  <% if (settings.adminView && user) { %>
       <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export Csv</a>            
       <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantsexcel">Export Excel</a>            
   <% } %>  
