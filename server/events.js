@@ -23,10 +23,33 @@ module.exports = function(app) {
     }
   };
   
-  //app.get('/api/events', asyncHandler(async function(request, response) {
-  //  response.json(await db.getFutureEventsOrderedByDate());
-  //}));
+  app.get('/events', asyncHandler(async function(request, response) {  
+    const allEvents = request.query.all == 'true';
+    const page = request.query.page ? parseInt(request.query.page) : 1  ;
+    const pageSize = request.query.pageSize ? parseInt(request.query.pageSize) : 10;
+    const skip = pageSize * (page - 1)
+    let events = await db.getEventsOrderedByDate({ skip: skip, limit: pageSize+1, future: !allEvents});  // read one more event than we actually need to so that we know if we reached the end
+    let pagination = { isFirstPage: page == 1, isLastPage: events.length <= pageSize }
+    pagination.isOnlyPage = pagination.isFirstPage && pagination.isLastPage;
+    if (!pagination.isFirstPage) {
+      pagination.prevLink = `/events?page=${page - 1}&pageSize=${pageSize}&all=${allEvents ? 'true' : 'false' }`
+    }
+    if (!pagination.isLastPage) {
+      pagination.nextLink = `/events?page=${page + 1}&pageSize=${pageSize}&all=${allEvents ? 'true' : 'false' }`
+    }    
+    if (!pagination.isLastPage) {
+      events.pop(); // skip the superfluous last event
+    }
+    response.render('events.ejs', { ...makeStdViewParams(request), events, pagination });
+  }));
 
+  app.get('/events/:eventId', asyncHandler(async function(request, response) {
+    console.log("event details " + request.params.eventId);
+    const event = await db.getEvent(request.params.eventId);
+    console.log(event);
+    response.render('eventdetails.ejs', { ...makeStdViewParams(request), event });
+  }));
+  
   app.post('/api/events', ensureAuthenticated, asyncHandler(async function(request, response) {
     console.log("event created");
 
@@ -82,14 +105,6 @@ module.exports = function(app) {
     await db.deleteEvent(request.params.eventId);
     response.redirect('/');
   }));  
-
-  
-  app.get('/eventdetails/:eventId', ensureAuthenticated, asyncHandler(async function(request, response) {
-    console.log("event details " + request.params.eventId);
-    const event = await db.getEvent(request.params.eventId);
-    console.log(event);
-    response.render('eventdetails.ejs', { ...makeStdViewParams(request), event });
-  }));
   
  app.get('/api/events/:eventId/_downloadparticipantscsv', ensureAuthenticated, asyncHandler(async function (request, response) {
     const event = await db.getEvent(request.params.eventId);

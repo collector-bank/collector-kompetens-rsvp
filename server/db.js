@@ -35,8 +35,8 @@ module.exports = {
     return dbdriver.findEvents(state, eventType, minDate, maxDate);
   },
   
-  getFutureEventsOrderedByDate: function() {
-    return dbdriver.getFutureEventsOrderedByDate();
+  getEventsOrderedByDate: function(filter) {
+    return dbdriver.getEventsOrderedByDate(filter);
   },
   
   getEvent(eventId) {

@@ -2,7 +2,7 @@
       <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-450 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
           <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
-          <h3 class="mb-0"><%= event.title %></h3>
+          <h3 class="mb-0 anonymous-link"><a href="/events/<%=event._id%>"><%= event.title %></a></h3>
           <div class="mb-1 text-muted">
             <% if (event.state == 'Closed') { %>
               <i class="fa fa-lock" aria-hidden="true"></i>
@@ -45,7 +45,7 @@
                     Add Guest
                   </button>              
                 <% } %>
-                <a class="btn btn-sm btn-outline-secondary"href="/eventdetails/<%=event._id%>">Details</a>                
+                <a class="btn btn-sm btn-outline-secondary"href="/events/<%=event._id%>">Details</a>                
                 <% if (settings.adminView) { %>
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>                
                   <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_delete" onclick="return confirm('Are you sure you want to delete the event <%= event.title %>?')">Delete</a>                
@@ -53,7 +53,6 @@
               </span>
             </div>
           <% } %>
-          
           
         </div>
         <div class="col-auto d-none d-lg-block">

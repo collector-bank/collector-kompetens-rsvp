@@ -37,13 +37,23 @@ module.exports = {
     return result;  
   },
   
-  getFutureEventsOrderedByDate: async function() {
+  getEventsOrderedByDate: async function(filter) {
+    console.log("filter: " + JSON.stringify(filter));
     let db = await getEventsCollection();
-    let now = new Date();      
-    now.setHours(0,0,0,0)
-    const findCondition = { $or: [{date: null}, {date: {$gte: now }}] } 
-    let result =  db.find(findCondition).sort({ date: 1 }).toArray();   
-    return result;
+    let condition = {};
+    if (filter.future) {
+      let now = new Date();      
+      now.setHours(0,0,0,0)
+      condition = { ...condition, $or: [{date: null}, {date: {$gte: now }}] }       
+    }
+    let result =  db.find(condition).sort({ date: 1 });
+    if (filter.skip) {
+      result.skip(filter.skip);
+    }
+    if (filter.limit) {
+      result.limit(filter.limit);
+    }
+    return result.toArray();
   },
   
   getEvent: async function(eventId) {
