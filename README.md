@@ -39,7 +39,6 @@ Rule configuration
 Example rule 1.
 ```json
 {
-     "id": "5d8e880b5205df7345d9b1b7",
      "match": {
           "entity": "Event",
           "state": "Open",
@@ -62,7 +61,6 @@ Example rule 1.
 Example rule 2:
 ```json
 {
-     "id": "5d8e88149b8cc11234717164",
      "match": {
           "entity": "Event",
           "state": "Open",
