@@ -40,5 +40,5 @@ events(app);
 rules(app);
 
 const listener = app.listen(process.env.PORT, function() {
-  console.log('App is listening on port: ' + listener.address().port);
+  console.log('App is listening on port' + listener.address().port);
 });
