@@ -10,11 +10,8 @@ const { eventParticipantListAsExcel } = require('../utils/export');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 function findMatches(match) {
-  console.log("dueInHours="+match.dueInHours);
   const maxDate = moment().add(match.dueInHours, 'hours').toDate();
   const minDate = moment().toDate();
-  console.log("minDate " + minDate.toISOString())	
-  console.log("maxDate " + maxDate.toISOString())
   return db.findEvents(match.state, match.eventType, minDate, maxDate);
 }
 

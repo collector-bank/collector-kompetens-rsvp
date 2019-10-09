@@ -7,8 +7,6 @@ const { isAdminUser } = require('../utils/checkauth');
 
 const dbName = process.env.DBNAME != null ? process.env.DBNAME : 'rsvp';
 
-console.log("dbName:" + dbName);
-
 let client;
 
 async function getDb() { 
