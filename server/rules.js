@@ -6,15 +6,12 @@ const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const stringify = require('csv-stringify/lib/sync');
 const { eventParticipantListAsExcel } = require('../utils/export');
-const { decorateEventWithQualifiedTimes } = require('../utils/datetimeutils');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 function findMatches(match) {
   const maxDate = moment().add(match.dueInHours, 'hours').toDate();
   const minDate = moment().toDate();
-  //console.log("minDate " + minDate.toISOString())
-  //console.log("maxDate " + maxDate.toISOString())
   return db.findEvents(match.state, match.eventType, minDate, maxDate);
 }
 
@@ -56,8 +53,7 @@ function sendMail(args, context) {
 async function evalRule(rule) {  
   const matches = await findMatches(rule.match);
   let alreadyApplied = rule.matches || [];
-  const applied = matches.filter(match => !alreadyApplied.includes(match._id.toString())).map(matchIn => {
-      let match = decorateEventWithQualifiedTimes(matchIn);
+  const applied = matches.filter(match => !alreadyApplied.includes(match._id)).map(match => {
       rule.actions.forEach(action => {
         switch(action.type) {
           case 'sendMail': 
