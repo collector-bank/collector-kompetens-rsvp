@@ -18,7 +18,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(methodOverride());
 app.use(cookieParser());
-app.use(expressSession({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
+app.use(expressSession({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false, cookie: { maxAge: 1*60*60*1000 } }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(passport.initialize());
