@@ -4,6 +4,8 @@
   <%= event.title %>
 </h2>
 
+<%- include('eventbar', { event, user }); %>
+
 <p>
   <%= event.description %>  
 </p>
@@ -56,13 +58,13 @@
             <td>
               <% if (event.state == "Open") { %>
                 <% if (settings.adminView) { %>
-                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove</a>            
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/events/<%=event._id%>">Remove</a>            
                 <% } else { %>            
                   <% if (participant.email == user.email) { %>
-                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=/eventdetails/<%=event._id%>">Remove</a>            
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=/events/<%=event._id%>">Remove</a>            
                   <% } %>
                   <% if (participant.guestTo == user.email) { %>
-                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/eventdetails/<%=event._id%>">Remove Guest</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leaveguest/<%=participant.email%>?route=/events/<%=event._id%>">Remove Guest</a>
                   <% } %>
                 <% } %>
               <% } %>
@@ -76,11 +78,7 @@
 <% } // if user %>
 
 <p>
-  <% if (settings.adminView && user) { %>
-      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export Csv</a>            
-      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantsexcel">Export Excel</a>            
-  <% } %>  
-  <a class="btn btn-sm btn-outline-secondary" href="/">Back to events</a>            
+  <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true }, route: "/events/" + event._id }); %>  
 </p>
 
 

@@ -3,20 +3,9 @@
         <div class="col p-4 d-flex flex-column position-static">
           <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
           <h3 class="mb-0 anonymous-link"><a href="/events/<%=event._id%>"><%= event.title %></a></h3>
-          <div class="mb-1 text-muted">
-            <% if (event.state == 'Closed') { %>
-              <i class="fa fa-lock" aria-hidden="true"></i>
-            <% } else { %>
-              <i class="fa fa-lock-open" aria-hidden="true"></i>
-            <% } %>  | 
-            <%=
-              [ event.date ? `${moment(event.date).format('YYYY-MM-DD')}` : "",
-              , [ event.startTime, event.endTime ].filter(x => x).join(" - ")
-              , moment(event.qualifiedStartTime).fromNow() 
-              ].filter(x => x).join(" | ")
-            %> 
-            | <a href="/api/events/<%=event._id%>/_ical" class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i></a>
-          </div>
+          
+          <%- include('eventbar', { event, user }); %>
+          
           <p class="card-text mb-auto"><%= event.description %></p>
           
           <span class="mt-2">
@@ -27,34 +16,9 @@
             <% } %>                          
           </span>
           
-          <% if (user) { %>
-            <div class="mt-2">
-              <span>
-                <%
-                  const signedUp = event.participants.find(x => x.email == user.email);
-                %>
-                <% if (event.state == "Open") { %>
-                  <% if (signedUp) { %>
-                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave">Leave</a>                  
-                  <% } else { %>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalUser<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
-                      Signup | <%= event.maxParticipants - event.participants.length %> seats left
-                    </button>                
-                  <% } %>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalGuest<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
-                    Add Guest
-                  </button>              
-                <% } %>
-                <a class="btn btn-sm btn-outline-secondary"href="/events/<%=event._id%>">Details</a>                
-                <% if (settings.adminView) { %>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>                
-                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_delete" onclick="return confirm('Are you sure you want to delete the event <%= event.title %>?')">Delete</a>                
-                <% } %>
-              </span>
-            </div>
-          <% } %>
-          
+          <%- include('eventbuttonbar', { buttonConfig: { export: false, gotoDetails:true, gotoList: false }, route: "/" }) %>
         </div>
+                  
         <div class="col-auto d-none d-lg-block">
           <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
             <title>Placeholder</title>
@@ -69,8 +33,3 @@
       </div>
     </div>    
 
-<% if (user) { %>
-  <%- include('signup-popup', { event, user, guestSignup:false }); %>
-  <%- include('signup-popup', { event, user, guestSignup:true }); %>
-  <%- include('editeventmodal', { event, user, moment }); %>
-<% } %>

@@ -70,15 +70,16 @@ module.exports = function(app) {
     console.log(request.body);
 
     await db.addParticipantToEvent(request.params.eventId, request.body)
-    response.redirect('/');
+    response.redirect(request.query.route ? request.query.route : '/');
   }));
 
   app.get('/api/events/:eventId/_leave', ensureAuthenticated, asyncHandler(async function (request, response) {
-    console.log("leave event " + request.params.eventId);
-    console.log(request.user);
-    console.log(request.query);
+    console.log("leave event: " + request.params.eventId);
+    console.log("user: " + request.user);    
+    console.log("query: " + request.query);
     
     await db.leaveEvent(request.params.eventId, request.user);
+    
     response.redirect(request.query.route ? request.query.route : '/');
   }));
 
@@ -97,7 +98,7 @@ module.exports = function(app) {
       ...request.body, 
       link: mkLink(request.body.link)
     });
-    response.redirect('/');
+    response.redirect(request.query.route ? request.query.route : '/');
   }));  
 
   app.get('/api/events/:eventId/_delete', ensureAuthenticated, asyncHandler(async function(request, response) {

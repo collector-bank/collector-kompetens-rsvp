@@ -8,14 +8,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/api/events/<%=event._id%>/_signup" method="POST">
+        <form action="/api/events/<%=event._id%>/_signup?route=<%=route%>" method="POST">
           <div class="form-group">
             <label for="name" class="col-form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="<%= guestSignup ? "" : user.displayName  %>" <%= guestSignup ? "" : "readonly" %>>
+            <input type="text" class="form-control" id="name" name="name" value="<%= guestSignup ? "" : user.displayName  %>" <%= guestSignup ? "" : "readonly" %> required>
           </div>
           <div class="form-group">
             <label for="email" class="col-form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="<%= guestSignup ? "" : user.email %>" <%= guestSignup ? "" : "readonly" %>>
+            <input type="email" class="form-control" id="email" name="email" value="<%= guestSignup ? "" : user.email %>" <%= guestSignup ? "" : "readonly" %> required>
           </div>          
           <div class="form-group">
             <label for="foodPreference" class="col-form-label">Food Preference</label>
