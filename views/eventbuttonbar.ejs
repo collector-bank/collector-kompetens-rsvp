@@ -1,0 +1,74 @@
+<!--eventbuttonbar -->
+
+<% 
+    const defaultButtonConfig = {
+        edit: true,
+        delete: true,
+        export: true,
+        signup: true,
+        gotoDetails: true,
+        gotoList: true
+    };
+
+    let inputButtonConfig = buttonConfig;
+    buttonConfig = Object.assign({}, defaultButtonConfig, inputButtonConfig);
+
+    const signedUp = user && event.participants.find(x => x.email == user.email);
+
+%>
+          <% if (user) { %>
+            <div class="mt-2">
+              <span>
+                <% if (buttonConfig.signup) { %>
+                  <% if (event.state == "Open") { %>
+                    <% if (signedUp) { %>
+                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_leave?route=<%=route%>">Leave</a>                  
+                    <% } else { %>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalUser<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
+                        Signup | <%= event.maxParticipants - event.participants.length %> seats left
+                      </button>                
+                    <% } %>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModalGuest<%=event._id%>" <%= event.participants.length < event.maxParticipants ? "" : "disabled"  %>>
+                      Add Guest
+                    </button>              
+                  <% } %>
+                <% } %>
+                
+                <!-- admin buttons -->
+                <% if (settings.adminView && user) { %>
+                
+                    <!-- edit -->
+                    <% if (buttonConfig.edit) { %>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#editEventModal<%=event._id%>">Edit</button>
+                    <% } %>
+                
+                    <!-- delete -->
+                    <% if (buttonConfig.delete) { %>                
+                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_delete" onclick="return confirm('Are you sure you want to delete the event <%= event.title %>?')">Delete</a>                                
+                    <% } %>
+                
+                    <!-- export -->
+                    <% if (buttonConfig.export) { %>                                
+                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantscsv">Export Csv</a>            
+                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/_downloadparticipantsexcel">Export Excel</a>            
+                    <% } %>
+                <% } %>  
+
+                <!-- goto event details -->
+                <% if (buttonConfig.gotoDetails) { %>                                
+                  <a class="btn btn-sm btn-outline-secondary"href="/events/<%=event._id%>">Details</a>
+                <% } %>  
+                
+                <!-- back to events -->
+                <% if (buttonConfig.gotoList) { %>                                
+                  <a class="btn btn-sm btn-outline-secondary" href="/">Back to events</a>            
+                <% } %>              
+              </span>
+           </div>
+        <% } %>          
+
+<% if (user) { %>
+  <%- include('signup-popup', { event, user, guestSignup:false }); %>
+  <%- include('signup-popup', { event, user, guestSignup:true }); %>
+  <%- include('editeventmodal', { event, user, moment }); %>
+<% } %>

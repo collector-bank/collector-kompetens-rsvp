@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/api/events/<%= event._id %>/_update" method="POST">
+        <form action="/api/events/<%= event._id %>/_update?route=<%=route%>" method="POST">
           <div class="form-group">
             <label for="title" class="col-form-label">Title</label>
             <input type="text" class="form-control" id="title" name="title" value="<%= event.title %>" required>

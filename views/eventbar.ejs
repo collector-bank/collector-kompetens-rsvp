@@ -1,0 +1,14 @@
+          <div class="mb-1 text-muted">
+            <% if (event.state == 'Closed') { %>
+              <i class="fa fa-lock" aria-hidden="true"></i>
+            <% } else { %>
+              <i class="fa fa-lock-open" aria-hidden="true"></i>
+            <% } %>  | 
+            <%=
+              [ event.date ? `${moment(event.date).format('YYYY-MM-DD')}` : "",
+              , [ event.startTime, event.endTime ].filter(x => x).join(" - ")
+              , moment(event.qualifiedStartTime).fromNow() 
+              ].filter(x => x).join(" | ")
+            %> 
+            | <a href="/api/events/<%=event._id%>/_ical" class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i></a>
+          </div>
