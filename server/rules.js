@@ -52,9 +52,10 @@ function sendMail(args, context) {
 
 async function evalRule(rule) {  
   const matches = await findMatches(rule.match);
-  let alreadyApplied = rule.matches || [];
-  const applied = matches.filter(match => !alreadyApplied.includes(match._id)).map(match => {
+  let alreadyApplied = (rule.matches || []).map(x => x.toString());  // objectid does not work with ==, use toString to remedy this
+  const applied = matches.filter(match => !alreadyApplied.includes(match._id.toString())).map(match => {
       rule.actions.forEach(action => {
+        console.log('executing action of type ' + action.type);
         switch(action.type) {
           case 'sendMail': 
             sendMail(action.args, match);
