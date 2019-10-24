@@ -134,5 +134,17 @@ module.exports = {
   addRuleMatches: async function(ruleId, entityIds) {
     let db = await getRulesCollection();
     await db.updateOne({ _id: ObjectID(ruleId) }, { $addToSet: { matches: {$each: entityIds} } } );
-  }
+  },
+  
+  addReviewToEvent: async function(eventId, reviewIn) {
+    let db = await getEventsCollection();
+    let event = await db.findOne({ _id: ObjectID(eventId)});
+    let review = { ...reviewIn };
+    
+    await db
+      .updateOne(
+        { _id: ObjectID(eventId) }, 
+        { $push: { reviews: review } }
+      );      
+  }    
 }

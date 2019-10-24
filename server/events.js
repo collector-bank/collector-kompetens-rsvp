@@ -117,7 +117,7 @@ module.exports = function(app) {
     sendEventParticipantListAsExcel(event, response);
  }));  
   
-  app.get('/api/events/:eventId/_ical', asyncHandler(async function(request, response) {
+  app.get('/api/events/:eventId/_ical', ensureAuthenticated, asyncHandler(async function(request, response) {
     const event = await db.getEvent(request.params.eventId);
     const eventEx = decorateEventWithQualifiedTimes(event);    
     
@@ -139,4 +139,12 @@ module.exports = function(app) {
         
     cal.serve(response);
   }));
+  
+  app.post('/api/events/:eventId/_addreview', ensureAuthenticated, asyncHandler(async function(request, response) {
+    console.log("addreview");
+    console.log("body:" + request.body);
+    await db.addReviewToEvent(request.params.eventId, { ...request.body, rate: parseInt(request.body.rate) });
+    response.redirect(request.query.route ? request.query.route : '/');
+  }));
+  
 }
