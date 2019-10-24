@@ -1,17 +1,21 @@
 <%- include('pageheader'); %>
 
+
 <h2><%= event.title %></h2>
 
-<%- include('eventbar', { event, user }); %>
+<%- include('eventbar', { event, user, route: "/events/" + event._id }); %>
 
 <p>
   <%= event.description %>  
 </p>
 
+<p>
+  <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true }, route: "/events/" + event._id }); %>  
+</p>
 
-<h4>
+<h3>
   Participants
-</h4>
+</h3>
 <% if (!user) { %>
 <p>
   Login to view participants.
@@ -75,9 +79,40 @@
 
 <% } // if user %>
 
+<% if (user && event.reviews) { %>
+<h3>Rating</h3>
+
 <p>
-  <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true }, route: "/events/" + event._id }); %>  
+  <% 
+    let rates = event.reviews.map(x => x.rate).filter(x => x);
+    let avgRate = rates.reduce((a,b) => a + b, 0) / rates.length;
+    let comments = event.reviews.map(x => x.comment).filter(x => x);
+  %>
+  Average rating: <%= avgRate  %>
 </p>
+
+<% if (user && settings.adminView) { %>
+<p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Rate</th>
+        <th scope="col">Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(review of  event.reviews) { %>
+             <tr>
+               <td><%= review.rate %> </td>
+               <td><%= review.comment %>  </td>
+            </tr>
+      <% } %>  
+    </tbody>
+  </table>
+</p>
+
+<% } %>
+<% } %>
 
 
 <%- include('pagefooter'); %>
