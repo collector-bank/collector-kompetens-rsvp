@@ -87,5 +87,9 @@ module.exports = {
   
   deleteRule(ruleId) {
     dbdriver.deleteRule(ruleId);      
-  }
+  },
+  
+  addReviewToEvent(eventId, review) {
+    dbdriver.addReviewToEvent(eventId, review);      
+  }  
 }

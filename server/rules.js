@@ -35,10 +35,12 @@ function sendMail(args, context) {
     let data = eventParticipantListAsExcel(context); // stringify(context.participants);
     let buff = new Buffer(data);
     let base64data = buff.toString('base64');    
+    let filename = 'participants-in-' + context.title.toLowerCase().replace(/[^a-zA-Z]/g,'-') + '.xlsx';
+    console.log("filename=" + filename);
     msg.attachments = [
       {
         content: base64data,
-        filename: 'participants-in-' + context.title.toLowerCase().replace(/\s/g,'-') + '.xlsx',
+        filename: filename,
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         disposition: 'attachment',
         contentId: 'participants-' + context._id 
@@ -91,6 +93,7 @@ module.exports = function(app) {
   }));
   
   app.get('/api/rules/_eval', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    console.log("eval rules");
     let rules = await db.getRules();
     let result = []
     for(let rule of rules)

@@ -1,0 +1,54 @@
+<div class="modal fade" id="addReviewModal<%=event._id%>" tabindex="-1" role="dialog" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addReviewModalLabel">Review <%= event.title %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        
+      </div>
+      <div class="modal-body">
+
+        <form action="/api/events/<%=event._id%>/_addreview?route=<%=route%>" method="POST">
+          
+            <!-- ref: https://codepen.io/tammykimkim/pen/yegZRw -->          
+          <div class="form-group">
+            <label class="col-form-label">Rating</label>
+            <div>
+              <div class="rate">
+                <input type="radio" id="star5-<%=event._id%>" name="rate" value="5" />
+                <label for="star5-<%=event._id%>" title="excellent">5 stars</label>
+                <input type="radio" id="star4-<%=event._id%>" name="rate" value="4" />
+                <label for="star4-<%=event._id%>" title="very good">4 stars</label>
+                <input type="radio" id="star3-<%=event._id%>" name="rate" value="3" />
+                <label for="star3-<%=event._id%>" title="good">3 stars</label>
+                <input type="radio" id="star2-<%=event._id%>" name="rate" value="2" />
+                <label for="star2-<%=event._id%>" title="fair">2 stars</label>
+                <input type="radio" id="star1-<%=event._id%>" name="rate" value="1" />
+                <label for="star1-<%=event._id%>" title="poor">1 star</label>
+              </div>                            
+            </div>
+          </div>
+          
+          <div class="form-group" style="clear:both">
+            <label for="name" class="col-form-label">Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="4"></textarea>
+          </div>
+
+          <p class="mb-1 text-muted" style="text-align:center; margin-bottom:14px!important">            
+            [ reviews are anonymous ]
+          </p>
+          
+          <div class="modal-footer">
+            <div class="form-group">        
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-collector-purple" >Submit</button>
+            </div>            
+          </div>  
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

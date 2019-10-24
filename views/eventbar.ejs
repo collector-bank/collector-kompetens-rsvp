@@ -1,8 +1,8 @@
           <div class="mb-1 text-muted">
             <% if (event.state == 'Closed') { %>
-              <i class="fa fa-lock" aria-hidden="true"></i>
+              <i class="fa fa-lock" aria-hidden="true" title="event is not open for signup"></i>
             <% } else { %>
-              <i class="fa fa-lock-open" aria-hidden="true"></i>
+              <i class="fa fa-lock-open" aria-hidden="true" title="event is open for signup"></i>
             <% } %>  | 
             <%=
               [ event.date ? `${moment(event.date).format('YYYY-MM-DD')}` : "",
@@ -10,5 +10,10 @@
               , moment(event.qualifiedStartTime).fromNow() 
               ].filter(x => x).join(" | ")
             %> 
-            | <a href="/api/events/<%=event._id%>/_ical" class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i></a>
+            <% if (user) { %>
+            | <span class="anonymous-link"><a href="/api/events/<%=event._id%>/_ical"><i class="fa fa-calendar" aria-hidden="true" title="download calendar"></i></a></span>
+            | <span class="anonymous-link"><a data-toggle="modal" href="#addReviewModal<%=event._id%>"><i class="far fa-comment-dots" title="review / add comments"></i></a></span>
+            <% } %>
           </div>
+
+  <%- include('addreview', { route: null }); %>
