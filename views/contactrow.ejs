@@ -1,0 +1,7 @@
+          <span class="mt-2">
+            <span><%= event.contact %></span>
+            <span><%= (event.contact && event.link) ? "|" : "" %></span>
+            <% if (event.link)  { %>
+              <a href="<%= event.link.href %>"><%=event.link.title %></a>
+            <% } %>                          
+          </span>

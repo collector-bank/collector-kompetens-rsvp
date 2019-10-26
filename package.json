@@ -24,7 +24,8 @@
     "ical-generator": "^1.8.1",
     "@sendgrid/mail": "^6.4.0",
     "moment-timezone": "^0.5.26",
-    "node-excel-export": "^1.4.4"
+    "node-excel-export": "^1.4.4",
+    "markdown-it": "^10.0.0"
   },
   "engines": {
     "node": "8.x"
