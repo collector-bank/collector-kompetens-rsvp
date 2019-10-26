@@ -4,18 +4,11 @@
           <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
           <h3 class="mb-0 anonymous-link"><a href="/events/<%=event._id%>"><%= event.title %></a></h3>
           
-          <%- include('eventbar', { event, user, route: "/" }); %>
+          <%- include('eventbar', { route: "/" }); %>
           
-          <p class="card-text mb-auto"><%= event.description %></p>
+          <p class="card-text mb-auto"><%- markdown(event.description) %></p>
           
-          <span class="mt-2">
-            <span><%= event.contact %></span>
-            <span><%= (event.contact && event.link) ? "|" : "" %></span>
-            <% if (event.link)  { %>
-              <a href="<%= event.link.href %>" class="text-collector-pink"><%=event.link.title %></a>
-            <% } %>                          
-          </span>
-          
+          <%- include('contactrow') %>          
           <%- include('eventbuttonbar', { buttonConfig: { export: false, gotoDetails:true, gotoList: false }, route: "/" }) %>
         </div>
                   

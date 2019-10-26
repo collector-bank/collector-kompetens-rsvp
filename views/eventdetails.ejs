@@ -3,11 +3,13 @@
 
 <h2><%= event.title %></h2>
 
-<%- include('eventbar', { event, user, route: "/events/" + event._id }); %>
+<%- include('eventbar', { route: "/events/" + event._id }); %>
 
 <p>
-  <%= event.description %>  
+  <%- markdown(event.description) %>  
 </p>
+
+<%- include('contactrow') %>          
 
 <p>
   <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true }, route: "/events/" + event._id }); %>  
@@ -85,8 +87,7 @@
 <p>
   <% 
     let rates = event.reviews.map(x => x.rate).filter(x => x);
-    let avgRate = rates.reduce((a,b) => a + b, 0) / rates.length;
-    let comments = event.reviews.map(x => x.comment).filter(x => x);
+    let avgRate = Math.round(rates.reduce((a,b) => a + b, 0) / rates.length * 10) / 10.0;
   %>
   Average rating: <%= avgRate  %>
 </p>
