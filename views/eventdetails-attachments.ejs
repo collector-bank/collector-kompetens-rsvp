@@ -1,0 +1,47 @@
+<h3>
+  Attachments
+</h3>
+
+<% if (settings.adminView) { %>
+
+  <form action="/api/events/<%= event._id %>/attachments?route=<%=route%>" method="POST" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label for="attachments" class="col-form-label">Attachments</label>
+      <input type="file" name="attachments" id="attachments" multiple>  
+    </div>
+
+    <div class="form-group">        
+        <button type="submit" class="btn btn-primary btn-collector-purple" >Attach</button>
+    </div>
+  </form>
+
+<% } %>
+
+<% if (event.attachments && event.attachments.length > 0) { %>
+
+  <p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">File</th>
+          <th scope="col"></th>      
+        </tr>
+      </thead>
+      <tbody>
+          <% for(let attachment of event.attachments) { %>
+            <tr>
+              <td><%= attachment.filename %></td>
+              <td>
+                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>?route=<%=route%>">Download</a>
+                  <% if (settings.adminView) { %>
+                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>/_delete?route=<%=route%>">Remove</a>            
+                  <% } %>
+              </td>
+            </tr>
+          <% } %>
+      </tbody>
+    </table>
+  </p>
+
+<% } %>

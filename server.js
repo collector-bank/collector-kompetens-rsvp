@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const db = require('./server/db');
 const events = require('./server/events');
 const auth = require('./server/auth');
+const attachments = require('./server/attachments');
 const asyncHandler = require('express-async-handler');
 const { makeStdViewParams } = require('./utils/viewhelpers');
 const { decorateEventWithQualifiedTimes } = require('./utils/datetimeutils');
@@ -38,6 +39,7 @@ app.get('/clientsettings/set', function(request, response) {
 });
 
 events(app);
+attachments(app);
 rules(app);
 
 const listener = app.listen(process.env.PORT, function() {
