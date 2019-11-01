@@ -146,5 +146,5 @@ module.exports = {
         { _id: ObjectID(eventId) }, 
         { $push: { reviews: review } }
       );      
-  }    
+  }  
 }

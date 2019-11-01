@@ -12,8 +12,14 @@
 <%- include('contactrow') %>          
 
 <p>
-  <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true }, route: "/events/" + event._id }); %>  
+  <%- include('eventbuttonbar', { buttonConfig: { gotoDetails:false, gotoList: true } }); %>  
 </p>
+
+<% if (settings.adminView || (event.attachments && event.attachments.length > 0)) { %>
+
+  <%- include('eventdetails-attachments'); %>
+
+<% } %>
 
 <h3>
   Participants

@@ -47,7 +47,7 @@ module.exports = function(app) {
     console.log("event details " + request.params.eventId);
     const event = await db.getEvent(request.params.eventId);
     console.log(event);
-    response.render('eventdetails.ejs', { ...makeStdViewParams(request), event });
+    response.render('eventdetails.ejs', { ...makeStdViewParams(request), event, route: "/events/" + request.params.eventId });
   }));
   
   app.post('/api/events', ensureAuthenticated, asyncHandler(async function(request, response) {
@@ -98,6 +98,7 @@ module.exports = function(app) {
       ...request.body, 
       link: mkLink(request.body.link)
     });
+    
     response.redirect(request.query.route ? request.query.route : '/');
   }));  
 
