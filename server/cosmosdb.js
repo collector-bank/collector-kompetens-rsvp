@@ -7,29 +7,28 @@ const { isAdminUser } = require('../utils/checkauth');
 
 const dbName = process.env.DBNAME != null ? process.env.DBNAME : 'rsvp';
 
-let client;
-
-async function getDb() { 
-    // https://techsparx.com/nodejs/async/asynchronous-mongodb.html
-    if (!client) client = await MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    return { 
-        db: client.db(dbName), 
-        client: client
-    };
-}
+let clientPromise = MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+let dbPromise = clientPromise.then(c => c.db(dbName));
       
 async function getEventsCollection() {
-  const { db } = await getDb();
+  const db = await dbPromise;
   return db.collection('events'); 
 }
 
 async function getRulesCollection() {
-  const { db } = await getDb();
+  const db = await dbPromise;
   return db.collection('rules');   
 }
 
 module.exports = {
 
+  dbconnection: {
+    client: clientPromise,
+    db: dbPromise
+  },
+  
+  getEventsCollection: getEventsCollection,
+  
   findEvents: async function(state, eventType, minDate, maxDate) {
     let db = await getEventsCollection();
     const findCondition = { $and: [{qualifiedStartTime: {$gte: minDate}}, {qualifiedStartTime: {$lte: maxDate }}], state: state, eventType: eventType } 

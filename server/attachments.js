@@ -4,55 +4,25 @@ const db = require("./db");
 const multer = require("multer");
 const ObjectID = require("mongodb").ObjectID;
 const MongoClient = require("mongodb").MongoClient;
+const { dbconnection, getEventsCollection } = require('./cosmosdb');
+const GridFsStorage = require('multer-gridfs-storage');
 
-const dbName = process.env.DBNAME != null ? process.env.DBNAME : "rsvp";
-const url = `mongodb://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBUSERNAME}.documents.azure.com:10255/${dbName}?ssl=true&replicaSet=globaldb`;
-
-const storage = require("multer-gridfs-storage")({
-  url: url,
+const storage = new GridFsStorage({ 
+  db: dbconnection.db, 
+  client: dbconnection.client,
   file: (req, file) => {
     return {
       bucketName: "attachments", //Setting collection name, default name is fs
       filename: file.originalname //Setting file name to original name of file
     };
-  }
+  }  
 });
 
 // Set multer storage engine to the newly created object
 const upload = multer({ storage: storage });
 
-let client;
-
-async function getDb() {
-  // https://techsparx.com/nodejs/async/asynchronous-mongodb.html
-  if (!client)
-    client = await MongoClient.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-  return {
-    db: client.db(dbName),
-    client: client
-  };
-}
-
-(async () => {
-    try {
-        console.log("initializing db connection");
-        await getDb();
-        console.log("initialed db connection");      
-    } catch (e) {
-      console.log("failed to init db connection " + e)
-    }
-})();
-
-async function getEventsCollection() {
-  const { db } = await getDb();
-  return db.collection("events");
-}
-
 async function getAttachmentsCollections() {
-  const { db } = await getDb();
+  const db = dbconnection.db;
   return {
     files: db.collection("attachments.files"),
     chunks: db.collection("attachments.chunks")
