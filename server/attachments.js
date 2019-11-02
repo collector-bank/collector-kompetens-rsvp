@@ -22,7 +22,7 @@ const storage = new GridFsStorage({
 const upload = multer({ storage: storage });
 
 async function getAttachmentsCollections() {
-  const db = dbconnection.db;
+  const db = await dbconnection.db;
   return {
     files: db.collection("attachments.files"),
     chunks: db.collection("attachments.chunks")
