@@ -36,6 +36,16 @@ async function getDb() {
   };
 }
 
+(async () => {
+    try {
+        console.log("initializing db connection");
+        await getDb();
+        console.log("initialed db connection");      
+    } catch (e) {
+      console.log("failed to init db connection " + e)
+    }
+})();
+
 async function getEventsCollection() {
   const { db } = await getDb();
   return db.collection("events");
