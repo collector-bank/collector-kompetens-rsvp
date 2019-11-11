@@ -18,30 +18,36 @@
 
 <% } %>
 
-<% if (event.attachments && event.attachments.length > 0) { %>
-
+<% if (!user) { %>
   <p>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">File</th>
-          <th scope="col"></th>      
-        </tr>
-      </thead>
-      <tbody>
-          <% for(let attachment of event.attachments) { %>
-            <tr>
-              <td><%= attachment.filename %></td>
-              <td>
-                  <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>?route=<%=route%>">Download</a>
-                  <% if (settings.adminView) { %>
-                      <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>/_delete?route=<%=route%>">Remove</a>            
-                  <% } %>
-              </td>
-            </tr>
-          <% } %>
-      </tbody>
-    </table>
+  Login to view attachments.
   </p>
+<% } else { %> 
+  <% if (event.attachments && event.attachments.length > 0) { %>
 
+    <p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">File</th>
+            <th scope="col"></th>      
+          </tr>
+        </thead>
+        <tbody>
+            <% for(let attachment of event.attachments) { %>
+              <tr>
+                <td><%= attachment.filename %></td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>?route=<%=route%>">Download</a>
+                    <% if (settings.adminView) { %>
+                        <a class="btn btn-sm btn-outline-secondary" href="/api/events/<%=event._id%>/attachments/<%=attachment.id%>/_delete?route=<%=route%>">Remove</a>            
+                    <% } %>
+                </td>
+              </tr>
+            <% } %>
+        </tbody>
+      </table>
+    </p>
+
+  <% } %>
 <% } %>
