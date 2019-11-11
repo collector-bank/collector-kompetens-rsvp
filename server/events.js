@@ -40,7 +40,7 @@ module.exports = function(app) {
     if (!pagination.isLastPage) {
       events.pop(); // skip the superfluous last event
     }
-    response.render('events.ejs', { ...makeStdViewParams(request), events, pagination });
+    response.render('events.ejs', { ...makeStdViewParams(request), events, pagination, route: '/events' });
   }));
 
   app.get('/events/:eventId', asyncHandler(async function(request, response) {

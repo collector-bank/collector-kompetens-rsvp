@@ -62,7 +62,7 @@ module.exports = function(app) {
 
   app.get(
     "/api/events/:eventId/attachments/:attachmentId",
-    [ensureAuthenticated, upload.array("attachments")],
+    ensureAuthenticated,
     asyncHandler(async function(request, response) {
       const { files, chunks } = await getAttachmentsCollections();
       const attachments = await files
