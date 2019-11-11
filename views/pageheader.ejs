@@ -51,7 +51,7 @@
     <div class="row flex-nowrap justify-content-between align-items-center">
       <div class="col-4 pt-1">
         <% if (!user) { %>
-          <a class="p-2 text-muted" href="/login">Log In</a>
+          <a class="p-2 text-muted" href="/login2?route=<%=route%>">Log In</a>
         <% } else { %>
           <span class="text-muted only-large-screens">Logged in as: <%= user.displayName %> </span>
         <% } %>          
