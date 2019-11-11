@@ -71,32 +71,15 @@ passport.use(new OIDCStrategy({
       res.render('account', { user: req.user });
     });
 */
-
-const passportConfig = request => {
-  return {
-    state: 'some state',    
-    customState: 'some custom state',
-    failureRedirect: '/loginerror'
-  }
-}
-
 module.exports = function(app) {
 
     app.get('/login',
       passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
-      function(request, response) {
+      function(req, res) {
         console.log('Login was called in the Sample');
-        response.redirect('/');
+        res.redirect('/');
     });
 
-    app.get('/login2', 
-          function(request, response) 
-          {
-              console.log('login2' + request.query.route + "," + request.url)
-              passport.authenticate('azuread-openidconnect', passportConfig(request))(request, response);
-          }
-    );
-  
     // POST /auth/openid
     //   Use passport.authenticate() as route middleware to authenticate the
     //   request.  The first step in OpenID authentication will involve redirecting
@@ -130,7 +113,7 @@ module.exports = function(app) {
     app.post('/auth/openid/return',
       passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
       function(req, res) {
-        console.log('We received a return from AzureAD (post).' + req.query.state + ", " + req.url + ", " + JSON.stringify(req.body));
+        console.log('We received a return from AzureAD (post).');
         res.redirect('/');
       });
 
