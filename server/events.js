@@ -22,26 +22,30 @@ module.exports = function(app) {
       return null;
     }
   };
+
+  function handleEventsRequest(pageRoute) {
+    return async function(request, response) {
+      const page = request.query.page ? parseInt(request.query.page) : 1  ;
+      const pageSize = request.query.pageSize ? parseInt(request.query.pageSize) : 10;
+      const skip = pageSize * (page - 1)
+      let events = await db.getEventsOrderedByDate({ skip: skip, limit: pageSize+1, future: pageRoute == '/events'});  // read one more event than we actually need to so that we know if we reached the end
+      let pagination = { isFirstPage: page == 1, isLastPage: events.length <= pageSize }
+      pagination.isOnlyPage = pagination.isFirstPage && pagination.isLastPage;
+      if (!pagination.isFirstPage) {
+        pagination.prevLink = `${pageRoute}?page=${page - 1}&pageSize=${pageSize}`
+      }
+      if (!pagination.isLastPage) {
+        pagination.nextLink = `${pageRoute}?page=${page + 1}&pageSize=${pageSize}`
+      }    
+      if (!pagination.isLastPage) {
+        events.pop(); // skip the superfluous last event
+      }
+      response.render('events.ejs', { ...makeStdViewParams(request), events, pagination, route: pageRoute });          
+    }
+  }
   
-  app.get('/events', asyncHandler(async function(request, response) {  
-    const allEvents = request.query.all == 'true';
-    const page = request.query.page ? parseInt(request.query.page) : 1  ;
-    const pageSize = request.query.pageSize ? parseInt(request.query.pageSize) : 10;
-    const skip = pageSize * (page - 1)
-    let events = await db.getEventsOrderedByDate({ skip: skip, limit: pageSize+1, future: !allEvents});  // read one more event than we actually need to so that we know if we reached the end
-    let pagination = { isFirstPage: page == 1, isLastPage: events.length <= pageSize }
-    pagination.isOnlyPage = pagination.isFirstPage && pagination.isLastPage;
-    if (!pagination.isFirstPage) {
-      pagination.prevLink = `/events?page=${page - 1}&pageSize=${pageSize}&all=${allEvents ? 'true' : 'false' }`
-    }
-    if (!pagination.isLastPage) {
-      pagination.nextLink = `/events?page=${page + 1}&pageSize=${pageSize}&all=${allEvents ? 'true' : 'false' }`
-    }    
-    if (!pagination.isLastPage) {
-      events.pop(); // skip the superfluous last event
-    }
-    response.render('events.ejs', { ...makeStdViewParams(request), events, pagination, route: '/events' });
-  }));
+  app.get('/events', asyncHandler(handleEventsRequest('/events')));
+  app.get('/archive', asyncHandler(handleEventsRequest('/archive')));
 
   app.get('/events/:eventId', asyncHandler(async function(request, response) {
     console.log("event details " + request.params.eventId);

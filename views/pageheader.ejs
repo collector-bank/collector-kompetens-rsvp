@@ -105,6 +105,16 @@
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
       <a class="p-2 text-muted" href="/logout">Logout</a>
+      <% 
+         const links = [ { title: "Upcoming Events", href: "/events"}, { title: "Event Archive", href: "/archive"}]
+         for(const link of links) {
+           if (route == link.href) {            
+      %>
+             <span class="p-2 text-muted"><%=link.title%></span>
+      <%   } else { %>
+             <a class="p-2 text-muted" href="<%=link.href%>"><%=link.title%></a>      
+      <%   } %>
+      <% } %>
       <% if (settings.adminView) { %>
         <a class="p-2 text-muted" href="#" data-toggle="modal" data-target="#newEventModal">Add Event</a>
       <% } %>

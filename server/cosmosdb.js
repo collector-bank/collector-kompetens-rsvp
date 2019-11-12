@@ -44,8 +44,13 @@ module.exports = {
       let now = new Date();      
       now.setHours(0,0,0,0)
       condition = { ...condition, $or: [{date: null}, {date: {$gte: now }}] }       
+    } else {
+      let now = new Date();      
+      now.setHours(0,0,0,0)
+      condition = { ...condition, $or: [{date: null}, {date: {$lt: now }}] }             
     }
-    let result =  db.find(condition).sort({ date: 1 });
+    const sortOrder = filter.future ? 1 : -1;
+    let result =  db.find(condition).sort({ date: sortOrder });
     if (filter.skip) {
       result.skip(filter.skip);
     }
