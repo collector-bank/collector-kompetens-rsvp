@@ -19,18 +19,18 @@ function processTemplate(messageTemplate, context){
   return messageTemplate;    
 }
 
-function sendMail(args, context) {
-  console.log("sending mail: " + JSON.stringify(args));
+function sendMail(margs, context) {
+  console.log("sending mail: ", margs, context);
   
   let msg = {
-    to: args.to == "[[[ADMINS]]]" ? adminUsers : args.to,
-    cc: args.cc == "[[[ADMINS]]]" ? adminUsers : args.cc,
-    from: args.from || "no.reply.kompetensgruppen@collectorbank.se",
-    subject: ejs.render(args.subject, { event: context }),
-    text: ejs.render(args.text, { event: context })
+    to: margs.to == "[[[ADMINS]]]" ? adminUsers : margs.to,
+    cc: margs.cc == "[[[ADMINS]]]" ? adminUsers : margs.cc,
+    from: margs.from || "no.reply.kompetensgruppen@collectorbank.se",
+    subject: ejs.render(margs.subject, { event: context }),
+    text: ejs.render(margs.text, { event: context })
   };
   
-  if (args.attachParticipantsList && context.participants && context.participants.length > 0) {
+  if (margs.attachParticipantsList && context.participants && context.participants.length > 0) {
     
     let data = eventParticipantListAsExcel(context); // stringify(context.participants);
     let buff = new Buffer(data);
@@ -104,5 +104,34 @@ module.exports = function(app) {
     response.json(result);
   }));
 
+  /*
+$hostname = "collector-bank-collector-kompetens-rsvp.glitch.me"
+$apiKey = "..."
+$sendTo = "..."
+
+$sendMailArgs = @{
+  to = $sendTo
+  subject = "test subject"
+  text = "test body"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+   -Uri "https://$hostname/api/test/sendmail" `
+   -Method Post `
+   -Headers @{ "X-Api-Key" = $apiKey } `
+   -Body $sendMailArgs `
+   -ContentType "application/json; charset=utf-8"  
+  */
+  app.post('/api/test/sendmail', ensureAuthenticatedApiCall, asyncHandler(async function(request, response) {
+    console.log(request.body);
+    try {
+      sendMail(request.body);
+      response.sendStatus(200);      
+    } 
+    catch(err) {
+      console.log(err);
+      response.send(err.toString());
+    }
+  }));
 }
 
