@@ -4,12 +4,12 @@
           <strong class="d-inline-block mb-2 text-collector-purple"><%= event.tag %></strong>
           <h3 class="mb-0 anonymous-link"><a href="/events/<%=event._id%>"><%= event.title %></a></h3>
           
-          <%- include('eventbar', { route: "/" }); %>
+          <%- include('eventbar'); %>
           
           <p class="card-text mb-auto"><%- markdown(event.description) %></p>
           
           <%- include('contactrow') %>          
-          <%- include('eventbuttonbar', { buttonConfig: { export: false, gotoDetails:true, gotoList: false }, route: "/" }) %>
+          <%- include('eventbuttonbar', { buttonConfig: { export: false, gotoDetails:true, gotoList: false } }) %>
         </div>
                   
         <div class="col-auto d-none d-lg-block">
