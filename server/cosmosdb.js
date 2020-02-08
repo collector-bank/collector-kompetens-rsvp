@@ -155,7 +155,9 @@ module.exports = {
   addCommentToEvent: async function(eventId, commentIn) {
     let db = await getEventsCollection();
     let comment = {...commentIn, _id: new ObjectID()};
-    await db.updateOne({ _id: ObjectID(eventId) }, { $push: { comments: comment } } );
+    let result = await db.findOneAndUpdate({ _id: ObjectID(eventId) }, { $push: { comments: comment } }, {returnNewDocument: true});
+    console.log("addCommentToEvent result", result);
+    return result.ok == 1 ? result.value : null;
   },
   
   deleteCommentFromEvent: async function(eventId, commentId, user) {
