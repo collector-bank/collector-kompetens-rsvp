@@ -9,6 +9,10 @@ const md = require('markdown-it')({
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
 module.exports = function(app) {
 
   app.post('/api/events/:eventId/comments', ensureAuthenticated, asyncHandler(async function(request, response) {
@@ -24,9 +28,9 @@ module.exports = function(app) {
     if (process.env.NOTIFY_PARTICIPANTS_WHEN_COMMENT_ADDED === "1") 
     {
       let msgBody = md.renderInline(comment.message);
+            
       let msg = {
-        to: event.participants.map(participant => participant.email).filter(email => email !== request.user.email),
-        cc: adminUsers,
+        to: event.participants.map(participant => participant.email).concat(adminUsers).filter(onlyUnique).filter(email => email !== request.user.email),
         from: "no.reply.kompetensgruppen@collectorbank.se",
         subject: `Collector Kompetens: A new comment was added to the event ${event.title}`,
         text: `${comment.user} says\n\n${comment.message}\n\nLink to event: ${"https://" + process.env.HOST + "/events/" + event._id}">`,
