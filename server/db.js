@@ -91,5 +91,9 @@ module.exports = {
   
   addReviewToEvent(eventId, review) {
     dbdriver.addReviewToEvent(eventId, review);      
+  },
+  
+  addCommentToEvent(eventId, comment) {
+    return dbdriver.addCommentToEvent(eventId, comment);
   }  
 }

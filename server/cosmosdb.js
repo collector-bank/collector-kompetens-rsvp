@@ -150,5 +150,10 @@ module.exports = {
         { _id: ObjectID(eventId) }, 
         { $push: { reviews: review } }
       );      
-  }  
+  },
+  
+  addCommentToEvent: async function(eventId, comment) {
+    let db = await getEventsCollection();
+    await db.updateOne({ _id: ObjectID(eventId) }, { $push: { comments: comment } } );
+  }
 }
