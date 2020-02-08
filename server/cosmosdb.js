@@ -152,8 +152,19 @@ module.exports = {
       );      
   },
   
-  addCommentToEvent: async function(eventId, comment) {
+  addCommentToEvent: async function(eventId, commentIn) {
     let db = await getEventsCollection();
+    let comment = {...commentIn, _id: new ObjectID()};
     await db.updateOne({ _id: ObjectID(eventId) }, { $push: { comments: comment } } );
+  },
+  
+  deleteCommentFromEvent: async function(eventId, commentId, user) {
+    console.log("deleteCommentFromEvent", {eventId, commentId, user});
+    let db = await getEventsCollection();
+    let condition = { _id: ObjectID(commentId) }
+    if (!isAdminUser(user.email)) {
+      condition['user'] = user.email.toLowerCase()
+    }
+    await db.updateOne({ _id: ObjectID(eventId) }, { $pull: { comments: condition } });
   }
 }

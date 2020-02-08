@@ -10,4 +10,9 @@ module.exports = function(app) {
     response.redirect(request.query.route ? request.query.route : '/');
   }));
 
+  app.get('/api/events/:eventId/comments/:commentId/_delete', ensureAuthenticated, asyncHandler(async function(request, response) {
+    console.log("delete comment", request.params);
+    await db.deleteCommentFromEvent(request.params.eventId, request.params.commentId, request.user);
+    response.redirect(request.query.route ? request.query.route : '/');
+  }));
 }
