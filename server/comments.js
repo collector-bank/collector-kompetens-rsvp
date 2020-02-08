@@ -15,7 +15,7 @@ module.exports = function(app) {
     let comment = { ...request.body, user: request.user.email, createdAt: new Date() };
     let event = await db.addCommentToEvent(request.params.eventId, comment);
     if (event == null) {
-      response.status(500);
+      response.sendStatus(500);
       return;
     }
     
@@ -29,10 +29,11 @@ module.exports = function(app) {
         cc: adminUsers,
         from: "no.reply.kompetensgruppen@collectorbank.se",
         subject: `Collector Kompetens: A new comment was added to the event ${event.title}`,
+        text: `${comment.user} says\n\n${comment.message}\n\nLink to event: ${"https://" + process.env.HOST + "/events/" + event._id}">`,
         html: `<p>${comment.user} says</p><p>${msgBody}</p><a href="${"https://" + process.env.HOST + "/events/" + event._id}">Link to event</a>`
       };
       console.log("sending mail", msg);
-      sgMail.send(msg); 
+      sgMail.sendMultiple(msg); 
       console.log("done sending mail");        
     }
     else
