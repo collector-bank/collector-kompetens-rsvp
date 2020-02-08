@@ -30,7 +30,7 @@ module.exports = function(app) {
       let msgBody = md.renderInline(comment.message);
             
       let msg = {
-        to: event.participants.map(participant => participant.email).concat(adminUsers).filter(onlyUnique).filter(email => email !== request.user.email),
+        to: event.participants.map(participant => participant.email).filter(email => email !== request.user.email).concat(adminUsers).filter(onlyUnique),
         from: "no.reply.kompetensgruppen@collectorbank.se",
         subject: `Collector Kompetens: A new comment was added to the event ${event.title}`,
         text: `${comment.user} says\n\n${comment.message}\n\nLink to event: ${"https://" + process.env.HOST + "/events/" + event._id}">`,
