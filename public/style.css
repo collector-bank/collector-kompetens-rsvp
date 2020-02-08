@@ -151,3 +151,11 @@ a {
   color: #ed008d;
   text-decoration: inherit;
 }
+
+.comment-container {
+  border: 1px solid #e5e5e5;
+  background-color: #f9f9f9;
+  border-radius: .25rem;
+  padding: 10px;
+  margin: 10px 0;
+}

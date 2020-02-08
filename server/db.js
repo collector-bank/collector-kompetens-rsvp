@@ -95,5 +95,9 @@ module.exports = {
   
   addCommentToEvent(eventId, comment) {
     return dbdriver.addCommentToEvent(eventId, comment);
-  }  
+  },
+  
+  deleteCommentFromEvent(eventId, commentId, user) {
+    dbdriver.deleteCommentFromEvent(eventId, commentId, user);
+  }
 }

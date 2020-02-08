@@ -1,5 +1,5 @@
 const db = require('./db');
-const {ensureAuthenticated,adminUsers,ensureAuthenticatedApiCall} = require('../utils/checkauth');
+const {adminUsers,ensureAuthenticatedApiCall} = require('../utils/checkauth');
 const asyncHandler = require('express-async-handler');
 const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
@@ -13,10 +13,6 @@ function findMatches(match) {
   const maxDate = moment().add(match.dueInHours, 'hours').toDate();
   const minDate = moment().toDate();
   return db.findEvents(match.state, match.eventType, minDate, maxDate);
-}
-
-function processTemplate(messageTemplate, context){
-  return messageTemplate;    
 }
 
 function sendMail(margs, context) {
