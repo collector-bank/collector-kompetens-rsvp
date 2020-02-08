@@ -14,6 +14,7 @@ const asyncHandler = require('express-async-handler');
 const { makeStdViewParams } = require('./utils/viewhelpers');
 const { decorateEventWithQualifiedTimes } = require('./utils/datetimeutils');
 const rules = require('./server/rules');
+const comments = require('./server/comments');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -41,6 +42,7 @@ app.get('/clientsettings/set', function(request, response) {
 events(app);
 attachments(app);
 rules(app);
+comments(app);
 
 const listener = app.listen(process.env.PORT, function() {
   console.log('App is listening on port' + listener.address().port);
