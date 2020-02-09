@@ -16,7 +16,7 @@ function onlyUnique(value, index, self) {
 module.exports = function(app) {
 
   app.post('/api/events/:eventId/comments', ensureAuthenticated, asyncHandler(async function(request, response) {
-    let comment = { ...request.body, user: request.user.email, createdAt: new Date() };
+    let comment = { ...request.body, user: { name: request.user.displayName, email: request.user.email }, createdAt: new Date() };
     let event = await db.addCommentToEvent(request.params.eventId, comment);
     if (event == null) {
       response.sendStatus(500);
