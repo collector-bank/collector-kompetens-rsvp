@@ -33,8 +33,8 @@ module.exports = function(app) {
         to: event.participants.map(participant => participant.email).concat(adminUsers).filter(onlyUnique).filter(email => email !== request.user.email),
         from: "no.reply.kompetensgruppen@collectorbank.se",
         subject: `Collector Kompetens: A new comment was added to the event ${event.title}`,
-        text: `${comment.user} says\n\n${comment.message}\n\nLink to event: ${"https://" + process.env.HOST + "/events/" + event._id}">`,
-        html: `<p>${comment.user} says</p><p>${msgBody}</p><a href="${"https://" + process.env.HOST + "/events/" + event._id}">Link to event</a>`
+        text: `${comment.user.name} says\n\n${comment.message}\n\nLink to event: ${"https://" + process.env.HOST + "/events/" + event._id}">`,
+        html: `<p>${comment.user.name} says</p><p>${msgBody}</p><a href="${"https://" + process.env.HOST + "/events/" + event._id}">Link to event</a>`
       };
       console.log("sending mail", msg);
       sgMail.sendMultiple(msg); 
