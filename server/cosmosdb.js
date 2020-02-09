@@ -165,7 +165,7 @@ module.exports = {
     let db = await getEventsCollection();
     let condition = { _id: ObjectID(commentId) }
     if (!isAdminUser(user.email)) {
-      condition['user'] = user.email.toLowerCase()
+      condition['user.email'] = user.email.toLowerCase()
     }
     await db.updateOne({ _id: ObjectID(eventId) }, { $pull: { comments: condition } });
   }

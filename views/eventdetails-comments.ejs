@@ -17,9 +17,9 @@
       <% for(let comment of sortedComments) { %>
             <div class="comment-container">
               <div class="mb-1 text-muted">
-                <%= comment.user %> | 
+                <%= comment.user.name %> | 
                 <%= moment(comment.createdAt).fromNow() %> 
-                <% if (user.email === comment.user || settings.adminView) { %>
+                <% if (user.email === comment.user.email || settings.adminView) { %>
                     | <span class="anonymous-link"><a href="/api/events/<%=event._id%>/comments/<%=comment._id%>/_delete?route=<%=route%>"><i class="fa fa-trash" aria-hidden="true" title="delete comment"></i></a></span>
                 <% } %>
               </div>
