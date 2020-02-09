@@ -72,14 +72,13 @@ passport.use(new OIDCStrategy({
     });
 */
 module.exports = function(app) {
-
-    app.get('/login',
-      passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
-      function(req, res) {
-        console.log('Login was called in the Sample');
-        res.redirect('/');
+  
+    app.get('/login', function(req, res) {
+        console.log('Login was called', req.query.route);            
+        req.session.returnTo = req.query.route || '/';
+        passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' })(req, res);                                                                                                                                                  
     });
-
+  
     // POST /auth/openid
     //   Use passport.authenticate() as route middleware to authenticate the
     //   request.  The first step in OpenID authentication will involve redirecting
@@ -90,7 +89,7 @@ module.exports = function(app) {
       passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
       function(req, res) {
         console.log('Authentication was called in the Sample');
-        res.redirect('/');
+        res.redirect(req.session.returnTo || '/');
       });
 
     // GET /auth/openid/return
@@ -102,7 +101,7 @@ module.exports = function(app) {
       passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
       function(req, res) {
         console.log('We received a return from AzureAD (get).');
-        res.redirect('/');
+        res.redirect(req.session.returnTo || '/');
       });
 
     // GET /auth/openid/return
@@ -113,8 +112,8 @@ module.exports = function(app) {
     app.post('/auth/openid/return',
       passport.authenticate('azuread-openidconnect', { failureRedirect: '/loginerror' }),
       function(req, res) {
-        console.log('We received a return from AzureAD (post).');
-        res.redirect('/');
+        console.log('We received a return from AzureAD (post).', req.session);
+        res.redirect(req.session.returnTo || '/');
       });
 
     app.get('/logout', function(req, res){
