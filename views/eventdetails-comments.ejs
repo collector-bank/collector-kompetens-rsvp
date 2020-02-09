@@ -34,8 +34,9 @@
 
     <script>
       function handleTextAreaKeyUp(event, elem) {
-        document.getElementById('add-comment-button').hidden = elem.value.length == 0;
-        if (event.keyCode == 13 && event.ctrlKey)
+        const addDisabled = elem.value.length == 0;
+        document.getElementById('add-comment-button').hidden = addDisabled;
+        if (event.keyCode == 13 && event.ctrlKey && !addDisabled)
         {
             document.getElementById('add-comment-form').submit();
         }
@@ -43,7 +44,7 @@
     </script>
 
     <div class="form-group">
-      <textarea class="form-control" id="message" name="message" rows="4" onKeyup="handleTextAreaKeyUp(event, this)"></textarea>
+      <textarea class="form-control" id="message" name="message" rows="4" onKeyup="handleTextAreaKeyUp(event, this)" placeholder="write your comment here (you can press ctrl+enter to add)"></textarea>
     </div>
 
     <div class="form-group">        
