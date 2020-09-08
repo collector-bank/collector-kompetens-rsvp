@@ -53,7 +53,9 @@
       <tr>
         <th scope="col">Name</th>
         <th scope="col">Email</th>
+        <% if (event.eventType === 'Lunch') { %>
         <th scope="col">Food Preference</th>
+        <% } %>
         <th scope="col">Guest to</th>
         <th scope="col"></th>      
       </tr>
@@ -63,7 +65,9 @@
           <tr>
             <td><%= participant.name %></td>
             <td><%= participant.email %></td>
+            <% if (event.eventType === 'Lunch') { %>
             <td><%= participant.foodPreference %></td>          
+            <% } %>
             <td><%= participant.guestTo %></td>
             <td>
               <% if (event.state == "Open") { %>
