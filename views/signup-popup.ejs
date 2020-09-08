@@ -16,11 +16,13 @@
           <div class="form-group">
             <label for="email" class="col-form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" value="<%= guestSignup ? "" : user.email %>" <%= guestSignup ? "" : "readonly" %> required>
-          </div>          
+          </div>
+          <% if (event.eventType === 'Lunch') { %>
           <div class="form-group">
             <label for="foodPreference" class="col-form-label">Food Preference</label>
             <input type="text" class="form-control" id="foodPreference" name="foodPreference">
           </div>
+          <% } %>
           <input type="hidden" id="guestTo" name="guestTo" value="<%= guestSignup ? user.email : "" %>">
           <div class="modal-footer">
             <div class="form-group">        
