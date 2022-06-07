@@ -1,7 +1,8 @@
 RSVP for Collector Kompetens Events
 ===================================
 
-A simple web app for RSVP
+A web app for managing educational events at Collector. 
+Demo app: https://glitch.com/edit/#!/collector-bank-collector-kompetens-rsvp
 
 Configuration
 ---------------
